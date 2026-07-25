@@ -22,12 +22,36 @@
             <div class="text-4xl mb-4">⚡</div>
             <button
               @click="handleSynthesize"
-              :disabled="!canSynthesize"
+              :disabled="!canSynthesize || isBatchRunning"
               class="btn btn-lg px-8 py-3 rounded-lg font-bold transition-all duration-200"
-              :class="canSynthesize ? 'bg-yellow-200 text-black hover:bg-yellow-300 shadow-lg' : 'bg-gray-300 text-gray-500 cursor-not-allowed'"
+              :class="canSynthesize && !isBatchRunning ? 'bg-yellow-200 text-black hover:bg-yellow-300 shadow-lg' : 'bg-gray-300 text-gray-500 cursor-not-allowed'"
             >
               {{ isAnimating ? '合成中...' : '开始合成' }}
             </button>
+
+            <div class="mt-4">
+              <select
+                v-model="batchCount"
+                class="form-select form-select-sm mb-2"
+                :disabled="!canSynthesize || isBatchRunning"
+                style="width: 160px; margin: 0 auto;"
+              >
+                <option :value="5">批量合成 5 次</option>
+                <option :value="10">批量合成 10 次</option>
+                <option :value="20">批量合成 20 次</option>
+                <option :value="50">批量合成 50 次</option>
+                <option :value="100">批量合成 100 次</option>
+              </select>
+              <button
+                @click="handleBatchSynthesize"
+                :disabled="!canSynthesize || isBatchRunning"
+                class="btn btn-lg px-8 py-3 rounded-lg font-bold transition-all duration-200"
+                :class="canSynthesize && !isBatchRunning ? 'bg-yellow-200 text-black hover:bg-yellow-300 shadow-lg' : 'bg-gray-300 text-gray-500 cursor-not-allowed'"
+              >
+                {{ isBatchRunning ? `${batchProgress}/${batchCount}` : '开始批量合成' }}
+              </button>
+            </div>
+
             <p class="text-gray-600 mt-4 text-sm">
               合成规则：将A、B两个源石的词条以不放回原则抽取，<br/>抽取数量等于源石A的词条数
             </p>
@@ -40,7 +64,7 @@
       </div>
 
       <div class="row mt-8">
-        <div class="col-lg-12">
+        <div class="col-lg-8">
           <div v-if="isAnimating" class="text-center py-8">
             <div class="spinner-border text-yellow-400" style="width: 4rem; height: 4rem;" role="status">
               <span class="visually-hidden">Loading...</span>
@@ -48,6 +72,9 @@
             <p class="text-gray-600 mt-4">正在计算合成结果...</p>
           </div>
           <SynthesisResult v-else :result="synthesisResult" />
+        </div>
+        <div class="col-lg-4">
+          <SynthesisStats :stats="stats" />
         </div>
       </div>
 
@@ -104,9 +131,10 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import StoneConfigPanel from './components/StoneConfigPanel.vue'
 import SynthesisResult from './components/SynthesisResult.vue'
+import SynthesisStats from './components/SynthesisStats.vue'
 import { synthesize } from './utils/synthesis'
 
 const stoneA = ref({ grade: '', crownCount: 0 })
@@ -114,9 +142,42 @@ const stoneB = ref({ grade: '', crownCount: 0 })
 const synthesisResult = ref(null)
 const isAnimating = ref(false)
 
+const batchCount = ref(5)
+const isBatchRunning = ref(false)
+const batchProgress = ref(0)
+
+const stats = ref({
+  total: 0,
+  0: 0,
+  1: 0,
+  2: 0,
+  3: 0,
+  4: 0
+})
+
 const canSynthesize = computed(() => {
   return stoneA.value.grade && stoneB.value.grade
 })
+
+const resetStats = () => {
+  stats.value = {
+    total: 0,
+    0: 0,
+    1: 0,
+    2: 0,
+    3: 0,
+    4: 0
+  }
+}
+
+watch(
+  [stoneA, stoneB],
+  () => {
+    resetStats()
+    synthesisResult.value = null
+  },
+  { deep: true }
+)
 
 const handleSynthesize = () => {
   if (!canSynthesize.value) return
@@ -124,9 +185,40 @@ const handleSynthesize = () => {
   isAnimating.value = true
   
   setTimeout(() => {
-    synthesisResult.value = synthesize(stoneA.value, stoneB.value)
+    const result = synthesize(stoneA.value, stoneB.value)
+    synthesisResult.value = result
+    
+    const crownCount = result.entries.filter(e => e.isCrown).length
+    stats.value.total++
+    stats.value[crownCount]++
+    
     isAnimating.value = false
-  }, 1500)
+  }, 100)
+}
+
+const handleBatchSynthesize = () => {
+  if (!canSynthesize.value || isBatchRunning.value) return
+  
+  isBatchRunning.value = true
+  batchProgress.value = 0
+  
+  const runBatch = () => {
+    if (batchProgress.value >= batchCount.value) {
+      isBatchRunning.value = false
+      return
+    }
+    
+    const result = synthesize(stoneA.value, stoneB.value)
+    const crownCount = result.entries.filter(e => e.isCrown).length
+    stats.value.total++
+    stats.value[crownCount]++
+    
+    batchProgress.value++
+    
+    requestAnimationFrame(runBatch)
+  }
+  
+  runBatch()
 }
 </script>
 
