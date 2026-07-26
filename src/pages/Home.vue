@@ -55,6 +55,13 @@ const tools = ref([
     description: '模拟源石合成，预测合成结果，统计皇冠词条概率',
     icon: '💎',
     path: '/stone-synthesis'
+  },
+  {
+    id: 2,
+    name: '团武属强伤害提升',
+    description: '根据属强、提升属强、基础白字计算伤害提升率',
+    icon: '⚔️',
+    path: '/damage-calculator'
   }
 ])
 </script>

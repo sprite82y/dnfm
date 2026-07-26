@@ -10,6 +10,11 @@ const routes = [
     path: '/stone-synthesis',
     name: 'StoneSynthesis',
     component: () => import('../pages/StoneSynthesis.vue')
+  },
+  {
+    path: '/damage-calculator',
+    name: 'DamageCalculator',
+    component: () => import('../pages/DamageCalculator.vue')
   }
 ]
 
