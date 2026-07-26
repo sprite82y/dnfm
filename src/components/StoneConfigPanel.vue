@@ -44,7 +44,7 @@
             v-for="(entry, index) in entries"
             :key="index"
             class="list-group-item d-flex align-items-center justify-content-between"
-            :class="entry.isCrown ? 'bg-gradient-to-r from-yellow-50 to-amber-50 border-yellow-200' : ''"
+            :class="entry.isCrown ? 'crown-bg' : ''"
           >
             <span class="d-flex align-items-center gap-2">
               <span v-if="entry.isCrown" class="text-2xl">👑</span>
@@ -122,20 +122,8 @@ const onCrownCountChange = () => {
 </script>
 
 <style scoped>
-.bg-gradient-to-r {
-  background: linear-gradient(to right, var(--tw-gradient-stops));
-}
-
-.from-yellow-50 {
-  --tw-gradient-from: #fefce8;
-  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(254, 252, 232, 0));
-}
-
-.to-amber-50 {
-  --tw-gradient-to: #fffbeb;
-}
-
-.border-yellow-200 {
+.crown-bg {
+  background: linear-gradient(to right, #fefce8, #fffbeb);
   border-color: #fde68a;
 }
 </style>

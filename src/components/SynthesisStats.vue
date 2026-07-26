@@ -1,23 +1,23 @@
 <template>
-  <div class="card bg-white/80 backdrop-blur-sm border border-gray-200 shadow-sm">
-    <div class="card-header bg-gray-50 text-gray-800">
+  <div class="card shadow-sm">
+    <div class="card-header bg-light">
       <h4 class="card-title mb-0">📊 合成统计</h4>
     </div>
     <div class="card-body">
       <div class="text-center mb-4">
-        <div class="text-3xl font-bold text-primary">{{ stats.total }}</div>
-        <div class="text-gray-500 text-sm">总合成次数</div>
+        <div class="fs-3 fw-bold text-primary">{{ stats.total }}</div>
+        <div class="text-muted">总合成次数</div>
       </div>
 
-      <div class="space-y-3">
-        <div v-for="crown in [0, 1, 2, 3, 4]" :key="crown" class="flex items-center gap-3">
-          <div class="flex-shrink-0">
-            <span class="text-xl">{{ crown === 0 ? '○' : '👑'.repeat(crown) }}</span>
+      <div class="d-flex flex-column gap-3">
+        <div v-for="crown in [0, 1, 2, 3, 4]" :key="crown" class="d-flex align-items-center gap-3">
+          <div class="flex-shrink-0" style="width: 70px;">
+            <span class="fs-xl">{{ crown === 0 ? '○' : '👑'.repeat(crown) }}</span>
           </div>
-          <div class="flex-grow">
-            <div class="d-flex justify-between mb-1">
-              <span class="text-sm font-medium text-gray-700">{{ crown }}皇冠</span>
-              <span class="text-sm text-gray-600">{{ stats[crown] }}次 ({{ getPercentage(crown) }}%)</span>
+          <div class="flex-grow-1">
+            <div class="d-flex justify-content-between mb-1">
+              <span class="text-muted">{{ crown }}皇冠</span>
+              <span class="text-secondary">{{ stats[crown] }}次 ({{ getPercentage(crown) }}%)</span>
             </div>
             <div class="progress" style="height: 8px;">
               <div
@@ -31,15 +31,15 @@
         </div>
       </div>
 
-      <div v-if="stats.total > 0" class="mt-4 pt-4 border-t border-gray-200">
-        <div class="text-center text-sm text-gray-500">
-          平均皇冠数: <span class="font-bold text-gray-700">{{ getAverage().toFixed(2) }}</span>
+      <div v-if="stats.total > 0" class="mt-4 pt-4 border-top border-gray-200">
+        <div class="text-center text-muted">
+          平均皇冠数: <span class="fw-bold">{{ getAverage().toFixed(2) }}</span>
         </div>
       </div>
 
       <div v-else class="text-center py-4">
-        <div class="text-3xl mb-2">📈</div>
-        <p class="text-gray-500 text-sm">开始合成后将显示统计数据</p>
+        <div class="fs-3 mb-2">📈</div>
+        <p class="text-muted">开始合成后将显示统计数据</p>
       </div>
     </div>
   </div>
@@ -78,12 +78,12 @@ const getAverage = () => {
 
 const getBarClass = (crown) => {
   const classes = {
-    0: 'bg-gray-400',
-    1: 'bg-blue-400',
-    2: 'bg-green-400',
-    3: 'bg-yellow-400',
-    4: 'bg-purple-500'
+    0: 'bg-secondary',
+    1: 'bg-primary',
+    2: 'bg-success',
+    3: 'bg-warning',
+    4: 'bg-purple'
   }
-  return classes[crown] || 'bg-gray-400'
+  return classes[crown] || 'bg-secondary'
 }
 </script>

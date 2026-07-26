@@ -1,19 +1,19 @@
 <template>
-  <div class="min-vh-100 bg-gradient-to-br from-gray-50 via-purple-50 to-gray-100">
+  <div class="min-vh-100 bg-gradient">
     <header class="bg-white/80 backdrop-blur-sm border-b border-gray-200 shadow-sm">
       <div class="container px-4 py-4">
         <div class="d-flex align-items-center justify-between">
-          <router-link to="/" class="d-flex align-items-center gap-2 text-gray-600 hover:text-gray-800 text-decoration-none">
+          <router-link to="/" class="d-flex align-items-center gap-2 text-muted hover:text-dark text-decoration-none">
             <span>← 返回</span>
           </router-link>
           <div class="d-flex align-items-center gap-3">
-            <span class="text-3xl">⚔️</span>
-            <h1 class="text-2xl font-bold text-gray-800">团武属强伤害提升计算</h1>
-            <span class="text-3xl">⚔️</span>
+            <span class="fs-3">⚔️</span>
+            <h1 class="fs-2 fw-bold text-dark">团武属强伤害提升计算</h1>
+            <span class="fs-3">⚔️</span>
           </div>
           <div class="w-16"></div>
         </div>
-        <p class="text-center text-gray-500 mt-1">计算属强提升带来的伤害提升率</p>
+        <p class="text-center text-muted mt-1">计算属强提升带来的伤害提升率</p>
       </div>
     </header>
 
@@ -21,7 +21,7 @@
       <div class="row g-6">
         <div class="col-lg-4">
           <div class="card bg-white/80 backdrop-blur-sm border border-gray-200 shadow-sm">
-            <div class="card-header bg-gray-50 text-gray-800">
+            <div class="card-header bg-light text-dark">
               <h4 class="card-title mb-0">输入参数</h4>
             </div>
             <div class="card-body">
@@ -55,8 +55,8 @@
               <button
                 @click="calculate"
                 :disabled="!canCalculate"
-                class="btn btn-lg w-full rounded-lg font-bold transition-all duration-200"
-                :class="canCalculate ? 'bg-yellow-200 text-black hover:bg-yellow-300 shadow-lg' : 'bg-gray-300 text-gray-500 cursor-not-allowed'"
+                class="btn btn-lg w-full rounded-lg fw-bold transition-all duration-200"
+                :class="canCalculate ? 'bg-warning text-dark hover-bg-warning shadow-lg' : 'bg-secondary text-muted cursor-not-allowed'"
               >
                 计算
               </button>
@@ -66,13 +66,13 @@
 
         <div class="col-lg-8">
           <div class="card bg-white/80 backdrop-blur-sm border border-gray-200 shadow-sm">
-            <div class="card-header bg-gray-50 text-gray-800">
+            <div class="card-header bg-light text-dark">
               <h4 class="card-title mb-0">计算结果</h4>
             </div>
             <div class="card-body">
               <div v-if="results.length === 0" class="text-center py-8">
-                <div class="text-3xl mb-2">📊</div>
-                <p class="text-gray-500">点击计算后显示结果</p>
+                <div class="fs-3 mb-2">📊</div>
+                <p class="text-muted">点击计算后显示结果</p>
               </div>
               <div v-else class="table-responsive">
                 <table class="table table-hover">
@@ -116,20 +116,20 @@
       <div class="row mt-8">
         <div class="col-lg-12">
           <div class="card bg-white/80 backdrop-blur-sm border border-gray-200 shadow-sm">
-            <div class="card-header bg-gray-50 text-gray-800">
+            <div class="card-header bg-light text-dark">
               <h4 class="card-title mb-0">计算公式说明</h4>
             </div>
-            <div class="card-body text-gray-700">
+            <div class="card-body text-secondary">
               <div class="row">
                 <div class="col-md-6">
-                  <ul class="list-unstyled text-sm space-y-2">
+                  <ul class="list-unstyled text-sm d-flex flex-column gap-2">
                     <li><strong>增伤</strong> = 0.05 + 属强 / 220</li>
                     <li><strong>属强总伤提升</strong> = (1.05 + (属强+属强提升)/220) / (1+增伤) - 1</li>
                     <li><strong>团武白字1</strong> = 12 × (1 + 增伤)</li>
                   </ul>
                 </div>
                 <div class="col-md-6">
-                  <ul class="list-unstyled text-sm space-y-2">
+                  <ul class="list-unstyled text-sm d-flex flex-column gap-2">
                     <li><strong>团武白字2</strong> = 12 × (1.05 + (属强+属强提升)/220)</li>
                     <li><strong>白字总伤加成</strong> = (100+基础白字+团武白字2) / (100+基础白字+团武白字1) - 1</li>
                     <li><strong>最终加成</strong> = (1+属强总伤提升) × (1+白字总伤加成) - 1</li>
@@ -144,14 +144,14 @@
 
     <footer class="bg-white/80 border-t border-gray-200 mt-auto">
       <div class="container px-4 py-4">
-        <p class="text-center text-gray-500 text-sm">工具集 © 2026</p>
+        <p class="text-center text-muted text-sm">工具集 © 2026</p>
       </div>
     </footer>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed } from 'vue'
 
 const inputData = ref({
   currentAttr: null,
@@ -209,29 +209,10 @@ const calculate = () => {
 const removeResult = (index) => {
   results.value.splice(index, 1)
 }
-
-watch(inputData, () => {}, { deep: true })
 </script>
 
 <style scoped>
-.bg-gradient-to-br {
-  background: linear-gradient(to bottom right, var(--tw-gradient-stops));
-}
-
-.from-gray-50 {
-  --tw-gradient-from: #f9fafb;
-  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-via, var(--tw-gradient-from)), var(--tw-gradient-to, rgba(249, 250, 251, 0));
-}
-
-.via-purple-50 {
-  --tw-gradient-via: #f5f3ff;
-}
-
-.to-gray-100 {
-  --tw-gradient-to: #f3f4f6;
-}
-
-.backdrop-blur-sm {
-  backdrop-filter: blur(8px);
+.hover-bg-warning:hover {
+  background-color: #f59e0b;
 }
 </style>
