@@ -52,14 +52,19 @@
                   placeholder="请输入基础白字"
                 />
               </div>
-              <button
-                @click="calculate"
-                :disabled="!canCalculate"
-                class="btn btn-lg w-full rounded-lg fw-bold transition-all duration-200"
-                :class="canCalculate ? 'bg-warning text-dark hover-bg-warning shadow-lg' : 'bg-secondary text-muted cursor-not-allowed'"
-              >
-                计算
-              </button>
+              <div class="d-flex gap-3">
+                <button
+                  @click="calculate"
+                  :disabled="!canCalculate"
+                  class="btn btn-lg flex-grow-1 rounded-lg fw-bold transition-all duration-200"
+                  :class="canCalculate ? 'bg-warning text-dark hover-bg-warning shadow-lg' : 'bg-secondary text-muted cursor-not-allowed'"
+                >
+                  计算
+                </button>
+                <div v-if="lastResult !== null" class="flex-shrink-0 d-flex align-items-center justify-center px-4 bg-success text-white rounded-lg">
+                  <span class="fw-bold">{{ formatPercent(lastResult) }}</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -160,6 +165,7 @@ const inputData = ref({
 })
 
 const results = ref([])
+const lastResult = ref(null)
 
 const canCalculate = computed(() => {
   return inputData.value.currentAttr !== null && 
@@ -201,6 +207,7 @@ const calculate = () => {
     r.baseWhite === baseWhite
   )
 
+  lastResult.value = finalIncrease
   if (!exists) {
     results.value.unshift(result)
   }
