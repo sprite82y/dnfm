@@ -21,11 +21,11 @@ export const GRADE_CONFIG = {
 
 export const CROSS_GRADE_PROBABILITIES = {
   '史诗+神器': {
-    '史诗': 22.22,
+    '史诗': 20.22,
     '神器': 6.37
   },
   '神器+史诗': {
-    '史诗': 22.22,
+    '史诗': 20.22,
     '神器': 6.37
   },
   '史诗+稀有': {
