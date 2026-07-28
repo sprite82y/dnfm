@@ -42,11 +42,10 @@
                 :disabled="!canSynthesize || isBatchRunning"
                 style="width: 160px; margin: 0 auto;"
               >
-                <option :value="5">批量合成 5 次</option>
                 <option :value="10">批量合成 10 次</option>
-                <option :value="20">批量合成 20 次</option>
                 <option :value="50">批量合成 50 次</option>
                 <option :value="100">批量合成 100 次</option>
+                <option :value="500">批量合成 500 次</option>
               </select>
               <button
                 @click="handleBatchSynthesize"
@@ -148,7 +147,7 @@ const stoneB = ref({ grade: '', crownCount: 0 })
 const synthesisResult = ref(null)
 const isAnimating = ref(false)
 
-const batchCount = ref(5)
+const batchCount = ref(10)
 const isBatchRunning = ref(false)
 const batchProgress = ref(0)
 
