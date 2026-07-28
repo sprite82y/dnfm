@@ -240,25 +240,33 @@ const openBoxes = async () => {
   currentResults.矛盾的结晶体 = 0
   currentResults.深渊调律之痕 = 0
   
-  for (let i = 0; i < boxCount.value; i++) {
-    await new Promise(resolve => setTimeout(resolve, 10))
-    const result = openBox()
+  const batchSize = 50
+  const totalBatches = Math.ceil(boxCount.value / batchSize)
+  
+  for (let batch = 0; batch < totalBatches; batch++) {
+    const start = batch * batchSize
+    const end = Math.min(start + batchSize, boxCount.value)
     
-    if (result.name === '太古龙晶') {
-      currentResults.太古龙晶 += result.amount
-      stats.太古龙晶 += result.amount
-    } else if (result.name === '龙之雷焰') {
-      currentResults.龙之雷焰 += result.amount
-      stats.龙之雷焰 += result.amount
-    } else if (result.name === '矛盾的结晶体') {
-      currentResults.矛盾的结晶体 += result.amount
-      stats.矛盾的结晶体 += result.amount
-    } else if (result.name === '深渊-调律之痕') {
-      currentResults.深渊调律之痕 += result.amount
-      stats.深渊调律之痕 += result.amount
+    for (let i = start; i < end; i++) {
+      const result = openBox()
+      
+      if (result.name === '太古龙晶') {
+        currentResults.太古龙晶 += result.amount
+        stats.太古龙晶 += result.amount
+      } else if (result.name === '龙之雷焰') {
+        currentResults.龙之雷焰 += result.amount
+        stats.龙之雷焰 += result.amount
+      } else if (result.name === '矛盾的结晶体') {
+        currentResults.矛盾的结晶体 += result.amount
+        stats.矛盾的结晶体 += result.amount
+      } else if (result.name === '深渊-调律之痕') {
+        currentResults.深渊调律之痕 += result.amount
+        stats.深渊调律之痕 += result.amount
+      }
     }
     
-    progress.value = i + 1
+    progress.value = end
+    await new Promise(resolve => requestAnimationFrame(resolve))
   }
   
   totalBoxes.value += boxCount.value

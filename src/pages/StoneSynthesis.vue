@@ -207,18 +207,25 @@ const handleBatchSynthesize = () => {
   isBatchRunning.value = true
   batchProgress.value = 0
   
+  const batchSize = 50
+  
   const runBatch = () => {
     if (batchProgress.value >= batchCount.value) {
       isBatchRunning.value = false
       return
     }
     
-    const result = synthesize(stoneA.value, stoneB.value)
-    const crownCount = result.entries.filter(e => e.isCrown).length
-    stats.value.total++
-    stats.value[crownCount]++
+    const start = batchProgress.value
+    const end = Math.min(start + batchSize, batchCount.value)
     
-    batchProgress.value++
+    for (let i = start; i < end; i++) {
+      const result = synthesize(stoneA.value, stoneB.value)
+      const crownCount = result.entries.filter(e => e.isCrown).length
+      stats.value.total++
+      stats.value[crownCount]++
+    }
+    
+    batchProgress.value = end
     
     requestAnimationFrame(runBatch)
   }
