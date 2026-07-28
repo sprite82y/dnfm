@@ -15,6 +15,11 @@ const routes = [
     path: '/damage-calculator',
     name: 'DamageCalculator',
     component: () => import('../pages/DamageCalculator.vue')
+  },
+  {
+    path: '/box-simulator',
+    name: 'BoxSimulator',
+    component: () => import('../pages/BoxSimulator.vue')
   }
 ]
 

@@ -44,6 +44,23 @@
             </div>
           </router-link>
         </div>
+
+        <div class="col-lg-6">
+          <router-link to="/box-simulator" class="text-decoration-none">
+            <div class="card bg-white/80 backdrop-blur-sm border border-gray-200 shadow-sm hover-shadow-lg transition-all duration-200 cursor-pointer">
+              <div class="card-body text-center py-8">
+                <div class="fs-1 mb-4">📦</div>
+                <h3 class="fs-xl fw-bold text-dark">超武盒子模拟器</h3>
+                <p class="text-muted mt-2">模拟开启超武盒子，预测获得太古龙晶等物品</p>
+                <div class="mt-4">
+                  <span class="badge bg-warning text-dark">盒子</span>
+                  <span class="badge bg-orange text-white">龙晶</span>
+                  <span class="badge bg-success text-white">雷焰</span>
+                </div>
+              </div>
+            </div>
+          </router-link>
+        </div>
       </div>
 
       <div class="row mt-8">
@@ -70,6 +87,17 @@
                     <li>• 设置基础白字数值</li>
                     <li>• 自动计算团武白字和最终伤害提升</li>
                     <li>• 支持多条计算记录对比</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="row mt-4">
+                <div class="col-md-6">
+                  <h5 class="text-primary mb-2">超武盒子模拟器</h5>
+                  <ul class="list-unstyled text-sm text-muted d-flex flex-column gap-1">
+                    <li>• 选择开启盒子数量（100/200/500/1000）</li>
+                    <li>• 模拟开启过程，显示每次获得物品</li>
+                    <li>• 统计累计获得的太古龙晶、龙之雷焰等</li>
+                    <li>• 查看物品概率说明</li>
                   </ul>
                 </div>
               </div>
