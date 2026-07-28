@@ -35,6 +35,7 @@
                 <option :value="200">开启 200 个盒子</option>
                 <option :value="500">开启 500 个盒子</option>
                 <option :value="1000">开启 1000 个盒子</option>
+                <option :value="10000">开启 10000 个盒子</option>
               </select>
             </div>
             <div class="col-md-6">

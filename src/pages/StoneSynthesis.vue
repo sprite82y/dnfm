@@ -46,6 +46,7 @@
                 <option :value="50">批量合成 50 次</option>
                 <option :value="100">批量合成 100 次</option>
                 <option :value="500">批量合成 500 次</option>
+                <option :value="1000">批量合成 1000 次</option>
               </select>
               <button
                 @click="handleBatchSynthesize"
