@@ -20,6 +20,11 @@ const routes = [
     path: '/box-simulator',
     name: 'BoxSimulator',
     component: () => import('../pages/BoxSimulator.vue')
+  },
+  {
+    path: '/amplify-simulator',
+    name: 'AmplifySimulator',
+    component: () => import('../pages/AmplifySimulator.vue')
   }
 ]
 
