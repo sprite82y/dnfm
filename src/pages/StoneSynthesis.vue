@@ -105,23 +105,6 @@
                   </ul>
                 </div>
               </div>
-              <div class="mt-4 pt-4 border-top border-gray-200">
-                <h5 class="text-warning mb-2">源石品级说明</h5>
-                <div class="row">
-                  <div class="col-md-4">
-                    <span class="badge bg-warning text-dark">史诗</span>
-                    <span class="text-muted ml-2">4个词条</span>
-                  </div>
-                  <div class="col-md-4">
-                    <span class="badge bg-danger text-white">神器</span>
-                    <span class="text-muted ml-2">3个词条</span>
-                  </div>
-                  <div class="col-md-4">
-                    <span class="badge bg-primary text-white">稀有</span>
-                    <span class="text-muted ml-2">2个词条</span>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
