@@ -23,16 +23,26 @@
           <h2 class="card-title text-lg fw-bold">获取胚子</h2>
         </div>
         <div class="card-body">
-          <div class="row justify-content-center align-items-center">
-            <div class="col-md-6">
-              <button
-                class="btn btn-lg w-full rounded-lg fw-bold transition-all duration-200 bg-warning text-dark hover-bg-warning shadow-lg"
-                data-bs-toggle="modal"
-                data-bs-target="#getEmblemModal"
-              >
-                📦 获取胚子
-              </button>
-            </div>
+          <div class="d-flex flex-wrap justify-content-center gap-3">
+            <button
+              class="btn btn-lg rounded-lg fw-bold transition-all duration-200 bg-warning text-dark hover-bg-warning shadow-lg"
+              data-bs-toggle="modal"
+              data-bs-target="#getEmblemModal"
+            >
+              📦 批量获取胚子
+            </button>
+            <button
+              @click="quickAddEmbryon('武器')"
+              class="btn btn-lg rounded-lg fw-bold transition-all duration-200 bg-warning text-dark hover-bg-warning shadow-lg"
+            >
+              ⚔️ 武器+1
+            </button>
+            <button
+              @click="quickAddEmbryon('非武器')"
+              class="btn btn-lg rounded-lg fw-bold transition-all duration-200 bg-info text-white shadow-lg"
+            >
+              🛡️ 非武器+1
+            </button>
           </div>
         </div>
       </div>
@@ -353,6 +363,11 @@ const getLevelColor = (level) => {
 
 const selectEmbryon = (embryon) => {
   selectedEmbryon.value = embryon
+  auto10Result.value = null
+}
+
+const quickAddEmbryon = (type) => {
+  embryons.value.push(createEmbryon(type))
   auto10Result.value = null
 }
 
