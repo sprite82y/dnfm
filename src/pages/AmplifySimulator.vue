@@ -250,20 +250,27 @@
       </div>
     </main>
 
-    <!-- 祝贺 Toast -->
+    <!-- 通知 Toast（祝贺/勉励共用） -->
     <div class="toast-container position-fixed top-50 start-50 translate-middle p-3" style="z-index: 9999;">
       <div
-        ref="celebrationToastEl"
-        class="toast align-items-center text-white bg-success border-0"
+        ref="toastEl"
+        class="toast align-items-center border-0"
+        :class="toastType === 'celebration' ? 'text-white bg-success' : 'text-dark bg-warning'"
         role="alert"
         aria-live="assertive"
         aria-atomic="true"
       >
         <div class="d-flex">
           <div class="toast-body fs-5 fw-bold text-center w-100 py-3">
-            🎉 {{ toastMessage }}
+            {{ toastMessage }}
           </div>
-          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+          <button
+            type="button"
+            class="btn-close me-2 m-auto"
+            :class="toastType === 'celebration' ? 'btn-close-white' : ''"
+            data-bs-dismiss="toast"
+            aria-label="Close"
+          ></button>
         </div>
       </div>
     </div>
@@ -345,7 +352,8 @@ const selectedEmbryon = ref(null)
 const useLuckyCharm = ref(true)
 const auto10Result = ref(null)
 const toastMessage = ref('')
-const celebrationToastEl = ref(null)
+const toastType = ref('celebration')
+const toastEl = ref(null)
 
 // 历史统计用
 const totalAttempts = ref(0)
@@ -371,7 +379,8 @@ const createEmbryon = (type) => {
     contradictionCost: 0,
     luckyCharmCost: 0,
     failCount: 0,
-    broken: false
+    broken: false,
+    encourageShown: false
   }
 }
 
@@ -398,11 +407,12 @@ const CELEBRATION_MESSAGES = {
   12: '恭喜勇士增幅12连成满级！传说中的增幅之神就是你！'
 }
 
-const showCelebration = (level) => {
-  toastMessage.value = CELEBRATION_MESSAGES[level] || `恭喜勇士增幅${level}连成！`
+const showToast = (message, type = 'celebration') => {
+  toastType.value = type
+  toastMessage.value = message
   nextTick(() => {
-    if (celebrationToastEl.value) {
-      const toast = new Toast(celebrationToastEl.value, { delay: 4000 })
+    if (toastEl.value) {
+      const toast = new Toast(toastEl.value, { delay: 4000 })
       toast.show()
     }
   })
@@ -472,7 +482,11 @@ const doOneAmplify = (embryon, lucky) => {
     embryon.level++
     totalSuccess.value++
     if (embryon.level >= 10 && embryon.failCount === 0) {
-      showCelebration(embryon.level)
+      showToast(CELEBRATION_MESSAGES[embryon.level] || `恭喜勇士增幅${embryon.level}连成！`, 'celebration')
+    }
+    if (embryon.level === 10 && embryon.contradictionCost >= 10000 && !embryon.encourageShown) {
+      embryon.encourageShown = true
+      showToast(`💪 勇士增幅到10已消耗${embryon.contradictionCost.toLocaleString()}个矛盾！坚持下去，光辉就在前方！`, 'encourage')
     }
     return true
   } else {
