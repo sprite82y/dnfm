@@ -250,6 +250,24 @@
       </div>
     </main>
 
+    <!-- 祝贺 Toast -->
+    <div class="toast-container position-fixed top-50 start-50 translate-middle p-3" style="z-index: 9999;">
+      <div
+        ref="celebrationToastEl"
+        class="toast align-items-center text-white bg-success border-0"
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+      >
+        <div class="d-flex">
+          <div class="toast-body fs-5 fw-bold text-center w-100 py-3">
+            🎉 {{ toastMessage }}
+          </div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+      </div>
+    </div>
+
     <!-- 弹框 -->
     <div class="modal fade" id="getEmblemModal" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog">
@@ -298,7 +316,8 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, nextTick } from 'vue'
+import { Toast } from 'bootstrap'
 
 const AMPLIFY_RULES = [
   { level: 1, rate: 100, weaponContradiction: 35, nonWeaponContradiction: 26, luckyCharm: 0 },
@@ -325,6 +344,8 @@ const embryons = ref([])
 const selectedEmbryon = ref(null)
 const useLuckyCharm = ref(true)
 const auto10Result = ref(null)
+const toastMessage = ref('')
+const celebrationToastEl = ref(null)
 
 // 历史统计用
 const totalAttempts = ref(0)
@@ -369,6 +390,22 @@ const selectEmbryon = (embryon) => {
 const quickAddEmbryon = (type) => {
   embryons.value.push(createEmbryon(type))
   auto10Result.value = null
+}
+
+const CELEBRATION_MESSAGES = {
+  10: '恭喜勇士增幅10连成，拯救阿拉德的重任就交给你了！',
+  11: '恭喜勇士增幅11连成！你是天选之人，阿拉德的希望！',
+  12: '恭喜勇士增幅12连成满级！传说中的增幅之神就是你！'
+}
+
+const showCelebration = (level) => {
+  toastMessage.value = CELEBRATION_MESSAGES[level] || `恭喜勇士增幅${level}连成！`
+  nextTick(() => {
+    if (celebrationToastEl.value) {
+      const toast = new Toast(celebrationToastEl.value, { delay: 4000 })
+      toast.show()
+    }
+  })
 }
 
 const getRule = (targetLevel, type) => {
@@ -434,6 +471,9 @@ const doOneAmplify = (embryon, lucky) => {
   if (roll <= rate) {
     embryon.level++
     totalSuccess.value++
+    if (embryon.level >= 10 && embryon.failCount === 0) {
+      showCelebration(embryon.level)
+    }
     return true
   } else {
     embryon.failCount++
