@@ -47,7 +47,7 @@
             :class="entry.isCrown ? 'crown-bg' : ''"
           >
             <span class="d-flex align-items-center gap-2">
-              <span v-if="entry.isCrown" class="text-2xl">👑</span>
+              <span v-if="entry.isCrown" class="fs-4">👑</span>
               <span>{{ entry.isCrown ? '皇冠' : '普通' }}</span>
             </span>
             <span class="badge bg-secondary">词条{{ index + 1 }}</span>

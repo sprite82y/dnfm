@@ -1,9 +1,9 @@
 <template>
   <div class="min-vh-100 bg-gradient">
-    <header class="bg-white/80 backdrop-blur-sm border-b border-gray-200 shadow-sm">
+    <header class="glass-card border-bottom border-secondary-subtle shadow-sm">
       <div class="container px-4 py-4">
-        <div class="d-flex align-items-center justify-between">
-          <router-link to="/" class="d-flex align-items-center gap-2 text-muted hover:text-dark text-decoration-none">
+        <div class="d-flex align-items-center justify-content-between">
+          <router-link to="/" class="d-flex align-items-center gap-2 text-muted hover-text-dark text-decoration-none">
             <span>← 返回</span>
           </router-link>
           <div class="d-flex align-items-center gap-3">
@@ -11,16 +11,16 @@
             <h1 class="fs-2 fw-bold text-dark">超武盒子模拟器</h1>
             <span class="fs-3">📦</span>
           </div>
-          <div class="w-16"></div>
+          <div style="width: 4rem;"></div>
         </div>
         <p class="text-center text-muted mt-1">模拟开启超武盒子，预测获得物品</p>
       </div>
     </header>
 
-    <main class="container px-4 py-8">
-      <div class="card shadow-lg border-2 border-orange mb-6">
+    <main class="container px-4 py-5">
+      <div class="card shadow-lg border-2 border-orange mb-4">
         <div class="card-header bg-orange text-white text-center py-4">
-          <h2 class="card-title text-xl fw-bold">开启盒子</h2>
+          <h2 class="card-title fs-5 fw-bold">开启盒子</h2>
         </div>
         <div class="card-body">
           <div class="row justify-content-center align-items-center">
@@ -42,7 +42,7 @@
               <button
                 @click="openBoxes"
                 :disabled="isOpening"
-                class="btn btn-lg w-full rounded-lg fw-bold transition-all duration-200"
+                class="btn btn-lg w-100 rounded-3 fw-bold transition-all"
                 :class="isOpening ? 'bg-secondary text-muted cursor-not-allowed' : 'bg-warning text-dark hover-bg-warning shadow-lg'"
               >
                 {{ isOpening ? `${progress}/${boxCount}` : '开始开启' }}
@@ -52,39 +52,39 @@
         </div>
       </div>
 
-      <div class="row g-4 mb-6">
+      <div class="row g-4 mb-4">
         <div class="col-lg-6">
           <div class="card shadow-lg border-2 border-purple h-100">
             <div class="card-header bg-purple text-white text-center py-3">
-              <h3 class="card-title text-base fw-bold">本次开启结果</h3>
+              <h3 class="card-title fs-6 fw-bold">本次开启结果</h3>
             </div>
             <div class="card-body">
-              <div v-if="!hasCurrentResult" class="text-center text-muted py-6">
+              <div v-if="!hasCurrentResult" class="text-center text-muted py-4">
                 点击"开始开启"按钮查看结果
               </div>
               <div v-else class="row">
                 <div class="col-md-6 mb-2">
-                  <div class="bg-warning/10 rounded-lg p-2">
-                    <h5 class="text-warning fw-bold text-sm mb-1">太古龙晶</h5>
-                    <p class="fs-4 fw-bold text-warning">{{ currentResults.太古龙晶 }}</p>
+                  <div class="bg-warning-subtle rounded-3 p-2">
+                    <h5 class="text-warning-emphasis fw-bold small mb-1">太古龙晶</h5>
+                    <p class="fs-4 fw-bold text-warning-emphasis">{{ currentResults.太古龙晶 }}</p>
                   </div>
                 </div>
                 <div class="col-md-6 mb-2">
-                  <div class="bg-success/10 rounded-lg p-2">
-                    <h5 class="text-success fw-bold text-sm mb-1">龙之雷焰</h5>
-                    <p class="fs-4 fw-bold text-success">{{ currentResults.龙之雷焰 }}</p>
+                  <div class="bg-success-subtle rounded-3 p-2">
+                    <h5 class="text-success-emphasis fw-bold small mb-1">龙之雷焰</h5>
+                    <p class="fs-4 fw-bold text-success-emphasis">{{ currentResults.龙之雷焰 }}</p>
                   </div>
                 </div>
                 <div class="col-md-6 mb-2">
-                  <div class="bg-info/10 rounded-lg p-2">
-                    <h5 class="text-info fw-bold text-sm mb-1">矛盾的结晶体</h5>
-                    <p class="fs-4 fw-bold text-info">{{ currentResults.矛盾的结晶体 }}</p>
+                  <div class="bg-info-subtle rounded-3 p-2">
+                    <h5 class="text-info-emphasis fw-bold small mb-1">矛盾的结晶体</h5>
+                    <p class="fs-4 fw-bold text-info-emphasis">{{ currentResults.矛盾的结晶体 }}</p>
                   </div>
                 </div>
                 <div class="col-md-6 mb-2">
-                  <div class="bg-secondary/10 rounded-lg p-2">
-                    <h5 class="text-secondary fw-bold text-sm mb-1">深渊-调律之痕</h5>
-                    <p class="fs-4 fw-bold text-secondary">{{ currentResults.深渊调律之痕 }}</p>
+                  <div class="bg-secondary-subtle rounded-3 p-2">
+                    <h5 class="text-secondary-emphasis fw-bold small mb-1">深渊-调律之痕</h5>
+                    <p class="fs-4 fw-bold text-secondary-emphasis">{{ currentResults.深渊调律之痕 }}</p>
                   </div>
                 </div>
               </div>
@@ -95,38 +95,38 @@
         <div class="col-lg-6">
           <div class="card shadow-lg border-2 border-primary h-100">
             <div class="card-header bg-primary text-white text-center py-3">
-              <h3 class="card-title text-base fw-bold">📊 累计统计</h3>
+              <h3 class="card-title fs-6 fw-bold">📊 累计统计</h3>
             </div>
             <div class="card-body">
               <div class="mb-3">
-                <span class="fw-bold text-dark text-sm">累计开启盒子：</span>
-                <span class="text-primary fw-bold fs-lg">{{ totalBoxes }}</span>
-                <span class="text-dark text-sm"> 个</span>
+                <span class="fw-bold text-dark small">累计开启盒子：</span>
+                <span class="text-primary fw-bold fs-5">{{ totalBoxes }}</span>
+                <span class="text-dark small"> 个</span>
               </div>
               
               <div class="row">
                 <div class="col-md-6 mb-2">
-                  <div class="bg-warning/10 rounded-lg p-2">
-                    <h5 class="text-warning fw-bold text-sm mb-1">太古龙晶</h5>
-                    <p class="fs-4 fw-bold text-warning">{{ stats.太古龙晶 }}</p>
+                  <div class="bg-warning-subtle rounded-3 p-2">
+                    <h5 class="text-warning-emphasis fw-bold small mb-1">太古龙晶</h5>
+                    <p class="fs-4 fw-bold text-warning-emphasis">{{ stats.太古龙晶 }}</p>
                   </div>
                 </div>
                 <div class="col-md-6 mb-2">
-                  <div class="bg-success/10 rounded-lg p-2">
-                    <h5 class="text-success fw-bold text-sm mb-1">龙之雷焰</h5>
-                    <p class="fs-4 fw-bold text-success">{{ stats.龙之雷焰 }}</p>
+                  <div class="bg-success-subtle rounded-3 p-2">
+                    <h5 class="text-success-emphasis fw-bold small mb-1">龙之雷焰</h5>
+                    <p class="fs-4 fw-bold text-success-emphasis">{{ stats.龙之雷焰 }}</p>
                   </div>
                 </div>
                 <div class="col-md-6 mb-2">
-                  <div class="bg-info/10 rounded-lg p-2">
-                    <h5 class="text-info fw-bold text-sm mb-1">矛盾的结晶体</h5>
-                    <p class="fs-4 fw-bold text-info">{{ stats.矛盾的结晶体 }}</p>
+                  <div class="bg-info-subtle rounded-3 p-2">
+                    <h5 class="text-info-emphasis fw-bold small mb-1">矛盾的结晶体</h5>
+                    <p class="fs-4 fw-bold text-info-emphasis">{{ stats.矛盾的结晶体 }}</p>
                   </div>
                 </div>
                 <div class="col-md-6 mb-2">
-                  <div class="bg-secondary/10 rounded-lg p-2">
-                    <h5 class="text-secondary fw-bold text-sm mb-1">深渊-调律之痕</h5>
-                    <p class="fs-4 fw-bold text-secondary">{{ stats.深渊调律之痕 }}</p>
+                  <div class="bg-secondary-subtle rounded-3 p-2">
+                    <h5 class="text-secondary-emphasis fw-bold small mb-1">深渊-调律之痕</h5>
+                    <p class="fs-4 fw-bold text-secondary-emphasis">{{ stats.深渊调律之痕 }}</p>
                   </div>
                 </div>
               </div>
@@ -137,13 +137,13 @@
 
       <div class="card shadow-lg border-2 border-secondary">
         <div class="card-header bg-secondary text-white text-center py-4">
-          <h3 class="card-title text-lg fw-bold">物品概率说明</h3>
+          <h3 class="card-title fs-5 fw-bold">物品概率说明</h3>
         </div>
         <div class="card-body">
           <div class="row">
             <div class="col-md-6">
               <h5 class="text-warning mb-2">太古龙晶</h5>
-              <ul class="list-unstyled text-sm">
+              <ul class="list-unstyled small">
                 <li>太古龙晶*10：0.0010%</li>
                 <li>太古龙晶*8：0.0018%</li>
                 <li>太古龙晶*6：0.0032%</li>
@@ -153,7 +153,7 @@
             </div>
             <div class="col-md-6">
               <h5 class="text-success mb-2">龙之雷焰</h5>
-              <ul class="list-unstyled text-sm">
+              <ul class="list-unstyled small">
                 <li>龙之雷焰*10：0.15%</li>
                 <li>龙之雷焰*8：0.65%</li>
                 <li>龙之雷焰*6：1.8%</li>
@@ -163,7 +163,7 @@
             </div>
             <div class="col-md-6">
               <h5 class="text-info mb-2">其他物品</h5>
-              <ul class="list-unstyled text-sm">
+              <ul class="list-unstyled small">
                 <li>矛盾的结晶体*1：10%</li>
                 <li>深渊-调律之痕*5：74.6286%</li>
               </ul>

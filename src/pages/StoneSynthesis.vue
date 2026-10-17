@@ -1,9 +1,9 @@
 <template>
   <div class="min-vh-100 bg-gradient">
-    <header class="bg-white/80 backdrop-blur-sm border-b border-gray-200 shadow-sm">
+    <header class="glass-card border-bottom border-secondary-subtle shadow-sm">
       <div class="container px-4 py-4">
-        <div class="d-flex align-items-center justify-between">
-          <router-link to="/" class="d-flex align-items-center gap-2 text-muted hover:text-dark text-decoration-none">
+        <div class="d-flex align-items-center justify-content-between">
+          <router-link to="/" class="d-flex align-items-center gap-2 text-muted hover-text-dark text-decoration-none">
             <span>← 返回</span>
           </router-link>
           <div class="d-flex align-items-center gap-3">
@@ -11,25 +11,25 @@
             <h1 class="fs-2 fw-bold text-dark">源石合成模拟器</h1>
             <span class="fs-3">💎</span>
           </div>
-          <div class="w-16"></div>
+          <div style="width: 4rem;"></div>
         </div>
         <p class="text-center text-muted mt-1">模拟源石合成，预测合成结果</p>
       </div>
     </header>
 
-    <main class="container px-4 py-8">
-      <div class="row g-6">
+    <main class="container px-4 py-5">
+      <div class="row g-4">
         <div class="col-lg-4">
           <StoneConfigPanel title="源石A" v-model="stoneA" />
         </div>
 
-        <div class="col-lg-4 d-flex flex-column justify-center">
+        <div class="col-lg-4 d-flex flex-column justify-content-center">
           <div class="text-center">
             <div class="fs-4 mb-4">⚡</div>
             <button
               @click="handleSynthesize"
               :disabled="!canSynthesize || isBatchRunning"
-              class="btn btn-lg px-8 py-3 rounded-lg fw-bold transition-all duration-200"
+              class="btn btn-lg px-5 py-3 rounded-3 fw-bold transition-all"
               :class="canSynthesize && !isBatchRunning ? 'bg-warning text-dark hover-bg-warning shadow-lg' : 'bg-secondary text-muted cursor-not-allowed'"
             >
               {{ isAnimating ? '合成中...' : '开始合成' }}
@@ -51,14 +51,14 @@
               <button
                 @click="handleBatchSynthesize"
                 :disabled="!canSynthesize || isBatchRunning"
-                class="btn btn-lg px-8 py-3 rounded-lg fw-bold transition-all duration-200"
+                class="btn btn-lg px-5 py-3 rounded-3 fw-bold transition-all"
                 :class="canSynthesize && !isBatchRunning ? 'bg-warning text-dark hover-bg-warning shadow-lg' : 'bg-secondary text-muted cursor-not-allowed'"
               >
                 {{ isBatchRunning ? `${batchProgress}/${batchCount}` : '开始批量合成' }}
               </button>
             </div>
 
-            <p class="text-muted mt-4 text-sm">
+            <p class="text-muted mt-4 small">
               合成规则：源石A为主源石，源石B为待合成源石
             </p>
           </div>
@@ -69,9 +69,9 @@
         </div>
       </div>
 
-      <div class="row mt-8">
+      <div class="row mt-5">
         <div class="col-lg-8">
-          <div v-if="isAnimating" class="text-center py-8">
+          <div v-if="isAnimating" class="text-center py-5">
             <div class="spinner-border text-warning" style="width: 4rem; height: 4rem;" role="status">
               <span class="visually-hidden">Loading...</span>
             </div>
@@ -84,9 +84,9 @@
         </div>
       </div>
 
-      <div class="row mt-8">
+      <div class="row mt-5">
         <div class="col-lg-12">
-          <div class="card bg-white/80 backdrop-blur-sm border border-gray-200 shadow-sm">
+          <div class="card glass-card border border-secondary-subtle shadow-sm">
             <div class="card-header bg-light text-dark">
               <h4 class="card-title mb-0">合成概率规则</h4>
             </div>
@@ -98,7 +98,7 @@
                 </div>
                 <div class="col-md-6">
                   <h5 class="text-warning mb-2">不同品级合成</h5>
-                  <ul class="list-unstyled text-sm">
+                  <ul class="list-unstyled small">
                     <li>史诗+神器：史诗词条 20.22%，神器词条 6.37%</li>
                     <li>史诗+稀有：史诗词条 22.89%，稀有词条 4.21%</li>
                     <li>神器+稀有：神器词条 23.57%，稀有词条 14.64%</li>
@@ -111,9 +111,9 @@
       </div>
     </main>
 
-    <footer class="bg-white/80 border-t border-gray-200 mt-auto">
+    <footer class="glass-card border-top border-secondary-subtle mt-auto">
       <div class="container px-4 py-4">
-        <p class="text-center text-muted text-sm">工具集 © 2026</p>
+        <p class="text-center text-muted small">工具集 © 2026</p>
       </div>
     </footer>
   </div>

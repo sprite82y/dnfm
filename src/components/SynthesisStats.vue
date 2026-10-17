@@ -12,7 +12,7 @@
       <div class="d-flex flex-column gap-3">
         <div v-for="crown in [0, 1, 2, 3, 4]" :key="crown" class="d-flex align-items-center gap-3">
           <div class="flex-shrink-0" style="width: 70px;">
-            <span class="fs-xl">{{ crown === 0 ? '○' : '👑'.repeat(crown) }}</span>
+            <span class="fs-4">{{ crown === 0 ? '○' : '👑'.repeat(crown) }}</span>
           </div>
           <div class="flex-grow-1">
             <div class="d-flex justify-content-between mb-1">
@@ -31,7 +31,7 @@
         </div>
       </div>
 
-      <div v-if="stats.total > 0" class="mt-4 pt-4 border-top border-gray-200">
+      <div v-if="stats.total > 0" class="mt-4 pt-4 border-top border-secondary-subtle">
         <div class="text-center text-muted">
           平均皇冠数: <span class="fw-bold">{{ getAverage().toFixed(2) }}</span>
         </div>

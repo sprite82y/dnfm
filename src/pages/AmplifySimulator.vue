@@ -1,9 +1,9 @@
 <template>
   <div class="min-vh-100 bg-gradient">
-    <header class="bg-white/80 backdrop-blur-sm border-b border-gray-200 shadow-sm">
+    <header class="glass-card border-bottom border-secondary-subtle shadow-sm">
       <div class="container px-4 py-4">
-        <div class="d-flex align-items-center justify-between">
-          <router-link to="/" class="d-flex align-items-center gap-2 text-muted hover:text-dark text-decoration-none">
+        <div class="d-flex align-items-center justify-content-between">
+          <router-link to="/" class="d-flex align-items-center gap-2 text-muted hover-text-dark text-decoration-none">
             <span>← 返回</span>
           </router-link>
           <div class="d-flex align-items-center gap-3">
@@ -11,21 +11,21 @@
             <h1 class="fs-2 fw-bold text-dark">增幅模拟器</h1>
             <span class="fs-3">🔧</span>
           </div>
-          <div class="w-16"></div>
+          <div style="width: 4rem;"></div>
         </div>
         <p class="text-center text-muted mt-1">模拟增幅过程，预测消耗和成功率</p>
       </div>
     </header>
 
-    <main class="container px-4 py-8">
-      <div class="card shadow-lg border-2 border-danger mb-6">
+    <main class="container px-4 py-5">
+      <div class="card shadow-lg border-2 border-danger mb-4">
         <div class="card-header bg-danger text-white text-center py-3">
-          <h2 class="card-title text-lg fw-bold">获取胚子</h2>
+          <h2 class="card-title fs-5 fw-bold">获取胚子</h2>
         </div>
         <div class="card-body">
           <div class="d-flex flex-wrap justify-content-center gap-3">
             <button
-              class="btn btn-lg rounded-lg fw-bold transition-all duration-200 bg-warning text-dark hover-bg-warning shadow-lg"
+              class="btn btn-lg rounded-3 fw-bold transition-all bg-warning text-dark hover-bg-warning shadow-lg"
               data-bs-toggle="modal"
               data-bs-target="#getEmblemModal"
             >
@@ -33,13 +33,13 @@
             </button>
             <button
               @click="quickAddEmbryon('武器')"
-              class="btn btn-lg rounded-lg fw-bold transition-all duration-200 bg-warning text-dark hover-bg-warning shadow-lg"
+              class="btn btn-lg rounded-3 fw-bold transition-all bg-warning text-dark hover-bg-warning shadow-lg"
             >
               ⚔️ 武器+1
             </button>
             <button
               @click="quickAddEmbryon('非武器')"
-              class="btn btn-lg rounded-lg fw-bold transition-all duration-200 bg-info text-white shadow-lg"
+              class="btn btn-lg rounded-3 fw-bold transition-all bg-info text-white shadow-lg"
             >
               🛡️ 非武器+1
             </button>
@@ -47,12 +47,12 @@
         </div>
       </div>
 
-      <div class="card shadow-lg border-2 border-primary mb-6">
+      <div class="card shadow-lg border-2 border-primary mb-4">
         <div class="card-header bg-primary text-white text-center py-3">
-          <h3 class="card-title text-lg fw-bold">胚子列表</h3>
+          <h3 class="card-title fs-5 fw-bold">胚子列表</h3>
         </div>
         <div class="card-body">
-          <div v-if="embryons.length === 0" class="text-center text-muted py-8">
+          <div v-if="embryons.length === 0" class="text-center text-muted py-5">
             请先点击"获取胚子"按钮获取胚子
           </div>
           <div v-else class="overflow-x-auto">
@@ -101,9 +101,9 @@
         </div>
       </div>
 
-      <div v-if="selectedEmbryon" class="card shadow-lg border-2 border-warning mb-6">
+      <div v-if="selectedEmbryon" class="card shadow-lg border-2 border-warning mb-4">
         <div class="card-header bg-warning text-dark text-center py-3">
-          <h3 class="card-title text-lg fw-bold">
+          <h3 class="card-title fs-5 fw-bold">
             增幅操作 - {{ selectedEmbryon.type }} +{{ selectedEmbryon.level }}
           </h3>
         </div>
@@ -146,7 +146,7 @@
                   <button
                     @click="doAmplify"
                     :disabled="selectedEmbryon.broken"
-                    class="btn btn-lg rounded-lg fw-bold transition-all duration-200 flex-grow-1 shadow-lg"
+                    class="btn btn-lg rounded-3 fw-bold transition-all flex-grow-1 shadow-lg"
                     :class="selectedEmbryon.broken ? 'bg-secondary text-muted cursor-not-allowed' : 'bg-warning text-dark hover-bg-warning'"
                   >
                     ⚡ 增幅
@@ -158,7 +158,7 @@
                     <button
                       @click="doAutoAmplify10"
                       :disabled="selectedEmbryon.broken"
-                      class="btn btn-lg rounded-lg fw-bold transition-all duration-200 shadow-lg w-100"
+                      class="btn btn-lg rounded-3 fw-bold transition-all shadow-lg w-100"
                       :class="selectedEmbryon.broken ? 'bg-secondary text-muted cursor-not-allowed' : 'bg-success text-white'"
                     >
                       🔥 一键增幅到+10
@@ -177,34 +177,34 @@
         </div>
       </div>
 
-      <div class="card shadow-lg border-2 border-secondary mb-6">
+      <div class="card shadow-lg border-2 border-secondary mb-4">
         <div class="card-header bg-secondary text-white text-center py-3">
-          <h3 class="card-title text-lg fw-bold">📊 汇总统计</h3>
+          <h3 class="card-title fs-5 fw-bold">📊 汇总统计</h3>
         </div>
         <div class="card-body">
           <div class="row">
             <div class="col-md-3 mb-3">
-              <div class="bg-secondary/10 rounded-lg p-3">
-                <h5 class="text-secondary fw-bold mb-2">矛盾总消耗</h5>
-                <p class="fs-2 fw-bold text-secondary">{{ totalContradiction }}</p>
+              <div class="bg-secondary-subtle rounded-3 p-3">
+                <h5 class="text-secondary-emphasis fw-bold mb-2">矛盾总消耗</h5>
+                <p class="fs-2 fw-bold text-secondary-emphasis">{{ totalContradiction }}</p>
               </div>
             </div>
             <div class="col-md-3 mb-3">
-              <div class="bg-primary/10 rounded-lg p-3">
-                <h5 class="text-primary fw-bold mb-2">幸运符总消耗</h5>
-                <p class="fs-2 fw-bold text-primary">{{ totalLuckyCharm }}</p>
+              <div class="bg-primary-subtle rounded-3 p-3">
+                <h5 class="text-primary-emphasis fw-bold mb-2">幸运符总消耗</h5>
+                <p class="fs-2 fw-bold text-primary-emphasis">{{ totalLuckyCharm }}</p>
               </div>
             </div>
             <div class="col-md-3 mb-3">
-              <div class="bg-danger/10 rounded-lg p-3">
-                <h5 class="text-danger fw-bold mb-2">损坏胚子数</h5>
-                <p class="fs-2 fw-bold text-danger">{{ brokenCount }}</p>
+              <div class="bg-danger-subtle rounded-3 p-3">
+                <h5 class="text-danger-emphasis fw-bold mb-2">损坏胚子数</h5>
+                <p class="fs-2 fw-bold text-danger-emphasis">{{ brokenCount }}</p>
               </div>
             </div>
             <div class="col-md-3 mb-3">
-              <div class="bg-success/10 rounded-lg p-3">
-                <h5 class="text-success fw-bold mb-2">平均成功率</h5>
-                <p class="fs-2 fw-bold text-success">{{ avgSuccessRate }}%</p>
+              <div class="bg-success-subtle rounded-3 p-3">
+                <h5 class="text-success-emphasis fw-bold mb-2">平均成功率</h5>
+                <p class="fs-2 fw-bold text-success-emphasis">{{ avgSuccessRate }}%</p>
               </div>
             </div>
           </div>
@@ -213,7 +213,7 @@
 
       <div class="card shadow-lg border-2 border-secondary">
         <div class="card-header bg-secondary text-white text-center py-3">
-          <h3 class="card-title text-lg fw-bold">增幅概率说明</h3>
+          <h3 class="card-title fs-5 fw-bold">增幅概率说明</h3>
         </div>
         <div class="card-body">
           <div class="overflow-x-auto">
@@ -240,7 +240,7 @@
               </tbody>
             </table>
           </div>
-          <div class="mt-4 text-muted text-sm">
+          <div class="mt-4 text-muted small">
             <p class="mb-1">📌 失败规则：</p>
             <p class="mb-1">• 目标等级 5~7：失败等级 -1</p>
             <p class="mb-1">• 目标等级 8~10：失败等级 -3</p>

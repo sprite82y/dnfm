@@ -7,7 +7,7 @@
     <div class="card-body">
       <div v-if="result" class="text-center mb-4">
         <div class="fs-1 mb-3">💎</div>
-        <div class="d-flex justify-content-center gap-4 text-sm">
+        <div class="d-flex justify-content-center gap-4 small">
           <span class="badge bg-info">
             皇冠词条: {{ crownCount }}
           </span>
@@ -29,7 +29,7 @@
             <span class="d-flex align-items-center gap-3">
               <span v-if="entry.isCrown">👑</span>
               <span class="fw-medium">{{ entry.isCrown ? '皇冠' : '普通' }}</span>
-              <span class="text-xs text-muted">来源: {{ entry.source === 'A' ? '源石A' : '源石B' }}</span>
+              <span class="small text-muted">来源: {{ entry.source === 'A' ? '源石A' : '源石B' }}</span>
             </span>
             <span class="badge" :class="entry.isCrown ? 'bg-warning text-dark' : 'bg-secondary text-white'">
               {{ index + 1 }}
@@ -38,7 +38,7 @@
         </ul>
       </div>
 
-      <div v-else class="text-center py-8">
+      <div v-else class="text-center py-5">
         <div class="fs-4 mb-3">🔮</div>
         <p class="text-muted">请选择源石A和源石B后点击合成</p>
       </div>

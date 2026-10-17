@@ -1,9 +1,9 @@
 <template>
   <div class="min-vh-100 bg-gradient">
-    <header class="bg-white/80 backdrop-blur-sm border-b border-gray-200 shadow-sm">
+    <header class="glass-card border-bottom border-secondary-subtle shadow-sm">
       <div class="container px-4 py-4">
-        <div class="d-flex align-items-center justify-between">
-          <router-link to="/" class="d-flex align-items-center gap-2 text-muted hover:text-dark text-decoration-none">
+        <div class="d-flex align-items-center justify-content-between">
+          <router-link to="/" class="d-flex align-items-center gap-2 text-muted hover-text-dark text-decoration-none">
             <span>← 返回</span>
           </router-link>
           <div class="d-flex align-items-center gap-3">
@@ -11,16 +11,16 @@
             <h1 class="fs-2 fw-bold text-dark">团武属强伤害提升计算</h1>
             <span class="fs-3">⚔️</span>
           </div>
-          <div class="w-16"></div>
+          <div style="width: 4rem;"></div>
         </div>
         <p class="text-center text-muted mt-1">计算属强提升带来的伤害提升率</p>
       </div>
     </header>
 
-    <main class="container px-4 py-8">
-      <div class="row g-6">
+    <main class="container px-4 py-5">
+      <div class="row g-4">
         <div class="col-lg-4">
-          <div class="card bg-white/80 backdrop-blur-sm border border-gray-200 shadow-sm">
+          <div class="card glass-card border border-secondary-subtle shadow-sm">
             <div class="card-header bg-light text-dark">
               <h4 class="card-title mb-0">输入参数</h4>
             </div>
@@ -56,12 +56,12 @@
                 <button
                   @click="calculate"
                   :disabled="!canCalculate"
-                  class="btn btn-lg flex-grow-1 rounded-lg fw-bold transition-all duration-200"
+                  class="btn btn-lg flex-grow-1 rounded-3 fw-bold transition-all"
                   :class="canCalculate ? 'bg-warning text-dark hover-bg-warning shadow-lg' : 'bg-secondary text-muted cursor-not-allowed'"
                 >
                   计算
                 </button>
-                <div v-if="lastResult !== null" class="flex-shrink-0 d-flex align-items-center justify-center px-4 bg-success text-white rounded-lg">
+                <div v-if="lastResult !== null" class="flex-shrink-0 d-flex align-items-center justify-content-center px-4 bg-success text-white rounded-3">
                   <span class="fw-bold">{{ formatPercent(lastResult) }}</span>
                 </div>
               </div>
@@ -70,12 +70,12 @@
         </div>
 
         <div class="col-lg-8">
-          <div class="card bg-white/80 backdrop-blur-sm border border-gray-200 shadow-sm">
+          <div class="card glass-card border border-secondary-subtle shadow-sm">
             <div class="card-header bg-light text-dark">
               <h4 class="card-title mb-0">计算结果</h4>
             </div>
             <div class="card-body">
-              <div v-if="results.length === 0" class="text-center py-8">
+              <div v-if="results.length === 0" class="text-center py-5">
                 <div class="fs-3 mb-2">📊</div>
                 <p class="text-muted">点击计算后显示结果</p>
               </div>
@@ -118,23 +118,23 @@
         </div>
       </div>
 
-      <div class="row mt-8">
+      <div class="row mt-5">
         <div class="col-lg-12">
-          <div class="card bg-white/80 backdrop-blur-sm border border-gray-200 shadow-sm">
+          <div class="card glass-card border border-secondary-subtle shadow-sm">
             <div class="card-header bg-light text-dark">
               <h4 class="card-title mb-0">计算公式说明</h4>
             </div>
             <div class="card-body text-secondary">
               <div class="row">
                 <div class="col-md-6">
-                  <ul class="list-unstyled text-sm d-flex flex-column gap-2">
+                  <ul class="list-unstyled small d-flex flex-column gap-2">
                     <li><strong>增伤</strong> = 0.05 + 属强 / 220</li>
                     <li><strong>属强总伤提升</strong> = (1.05 + (属强+属强提升)/220) / (1+增伤) - 1</li>
                     <li><strong>团武白字1</strong> = 12 × (1 + 增伤)</li>
                   </ul>
                 </div>
                 <div class="col-md-6">
-                  <ul class="list-unstyled text-sm d-flex flex-column gap-2">
+                  <ul class="list-unstyled small d-flex flex-column gap-2">
                     <li><strong>团武白字2</strong> = 12 × (1.05 + (属强+属强提升)/220)</li>
                     <li><strong>白字总伤加成</strong> = (100+基础白字+团武白字2) / (100+基础白字+团武白字1) - 1</li>
                     <li><strong>最终加成</strong> = (1+属强总伤提升) × (1+白字总伤加成) - 1</li>
@@ -147,9 +147,9 @@
       </div>
     </main>
 
-    <footer class="bg-white/80 border-t border-gray-200 mt-auto">
+    <footer class="glass-card border-top border-secondary-subtle mt-auto">
       <div class="container px-4 py-4">
-        <p class="text-center text-muted text-sm">工具集 © 2026</p>
+        <p class="text-center text-muted small">工具集 © 2026</p>
       </div>
     </footer>
   </div>
