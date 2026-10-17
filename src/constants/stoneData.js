@@ -45,27 +45,3 @@ export const CROSS_GRADE_PROBABILITIES = {
     '稀有': 14.64
   }
 }
-
-export const GRADE_COLORS = {
-  [STONE_GRADES.EPIC]: {
-    bg: 'bg-purple',
-    border: 'border-purple',
-    text: 'text-purple'
-  },
-  [STONE_GRADES.ARTIFACT]: {
-    bg: 'bg-orange',
-    border: 'border-orange',
-    text: 'text-orange'
-  },
-  [STONE_GRADES.RARE]: {
-    bg: 'bg-blue',
-    border: 'border-blue',
-    text: 'text-blue'
-  }
-}
-
-export const GRADE_LABELS = {
-  [STONE_GRADES.EPIC]: '史诗源石',
-  [STONE_GRADES.ARTIFACT]: '神器源石',
-  [STONE_GRADES.RARE]: '稀有源石'
-}

@@ -1,23 +1,5 @@
 <template>
-  <div class="min-vh-100 bg-gradient">
-    <header class="glass-card border-bottom border-secondary-subtle shadow-sm">
-      <div class="container px-4 py-4">
-        <div class="d-flex align-items-center justify-content-between">
-          <router-link to="/" class="d-flex align-items-center gap-2 text-muted hover-text-dark text-decoration-none">
-            <span>← 返回</span>
-          </router-link>
-          <div class="d-flex align-items-center gap-3">
-            <span class="fs-3">💎</span>
-            <h1 class="fs-2 fw-bold text-dark">源石合成模拟器</h1>
-            <span class="fs-3">💎</span>
-          </div>
-          <div style="width: 4rem;"></div>
-        </div>
-        <p class="text-center text-muted mt-1">模拟源石合成，预测合成结果</p>
-      </div>
-    </header>
-
-    <main class="container px-4 py-5">
+  <PageLayout title="源石合成模拟器" icon="💎" subtitle="模拟源石合成，预测合成结果">
       <div class="row g-4">
         <div class="col-lg-4">
           <StoneConfigPanel title="源石A" v-model="stoneA" />
@@ -109,18 +91,12 @@
           </div>
         </div>
       </div>
-    </main>
-
-    <footer class="glass-card border-top border-secondary-subtle mt-auto">
-      <div class="container px-4 py-4">
-        <p class="text-center text-muted small">工具集 © 2026</p>
-      </div>
-    </footer>
-  </div>
+  </PageLayout>
 </template>
 
 <script setup>
 import { ref, computed, watch } from 'vue'
+import PageLayout from '../components/PageLayout.vue'
 import StoneConfigPanel from '../components/StoneConfigPanel.vue'
 import SynthesisResult from '../components/SynthesisResult.vue'
 import SynthesisStats from '../components/SynthesisStats.vue'

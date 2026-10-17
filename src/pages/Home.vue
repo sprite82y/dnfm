@@ -1,15 +1,5 @@
 <template>
-  <div class="min-vh-100 bg-gradient">
-    <header class="glass-card border-bottom border-secondary-subtle shadow-sm">
-      <div class="container px-4 py-4">
-        <div class="text-center">
-          <h1 class="fs-3 fw-bold text-dark">⚔️ DNF手游工具集 ⚔️</h1>
-          <p class="text-muted mt-2">为勇士们打造的实用工具</p>
-        </div>
-      </div>
-    </header>
-
-    <main class="container px-4 py-5">
+  <PageLayout title="⚔️ DNF手游工具集 ⚔️" subtitle="为勇士们打造的实用工具" :show-back="false">
       <div class="row g-4">
         <div class="col-lg-6">
           <router-link to="/stone-synthesis" class="text-decoration-none">
@@ -131,17 +121,11 @@
           </div>
         </div>
       </div>
-    </main>
-
-    <footer class="glass-card border-top border-secondary-subtle mt-auto">
-      <div class="container px-4 py-4">
-        <p class="text-center text-muted small">工具集 © 2026</p>
-      </div>
-    </footer>
-  </div>
+  </PageLayout>
 </template>
 
 <script setup>
+import PageLayout from '../components/PageLayout.vue'
 </script>
 
 <style scoped>

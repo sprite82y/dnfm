@@ -1,4 +1,4 @@
-import { STONE_GRADES, GRADE_CONFIG, CROSS_GRADE_PROBABILITIES } from '../constants/stoneData'
+import { GRADE_CONFIG, CROSS_GRADE_PROBABILITIES } from '../constants/stoneData'
 
 export const generateEntries = (grade, crownCount) => {
   const config = GRADE_CONFIG[grade]

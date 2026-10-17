@@ -1,23 +1,5 @@
 <template>
-  <div class="min-vh-100 bg-gradient">
-    <header class="glass-card border-bottom border-secondary-subtle shadow-sm">
-      <div class="container px-4 py-4">
-        <div class="d-flex align-items-center justify-content-between">
-          <router-link to="/" class="d-flex align-items-center gap-2 text-muted hover-text-dark text-decoration-none">
-            <span>← 返回</span>
-          </router-link>
-          <div class="d-flex align-items-center gap-3">
-            <span class="fs-3">📦</span>
-            <h1 class="fs-2 fw-bold text-dark">超武盒子模拟器</h1>
-            <span class="fs-3">📦</span>
-          </div>
-          <div style="width: 4rem;"></div>
-        </div>
-        <p class="text-center text-muted mt-1">模拟开启超武盒子，预测获得物品</p>
-      </div>
-    </header>
-
-    <main class="container px-4 py-5">
+  <PageLayout title="超武盒子模拟器" icon="📦" subtitle="模拟开启超武盒子，预测获得物品">
       <div class="card shadow-lg border-2 border-orange mb-4">
         <div class="card-header bg-orange text-white text-center py-4">
           <h2 class="card-title fs-5 fw-bold">开启盒子</h2>
@@ -171,12 +153,12 @@
           </div>
         </div>
       </div>
-    </main>
-  </div>
+  </PageLayout>
 </template>
 
 <script setup>
 import { ref, reactive } from 'vue'
+import PageLayout from '../components/PageLayout.vue'
 
 const boxCount = ref(100)
 const isOpening = ref(false)
@@ -276,10 +258,6 @@ const openBoxes = async () => {
 </script>
 
 <style scoped>
-.fs-xl {
-  font-size: 1.5rem;
-}
-
 .hover-bg-warning:hover {
   background-color: #f59e0b;
 }

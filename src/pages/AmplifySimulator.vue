@@ -1,23 +1,5 @@
 <template>
-  <div class="min-vh-100 bg-gradient">
-    <header class="glass-card border-bottom border-secondary-subtle shadow-sm">
-      <div class="container px-4 py-4">
-        <div class="d-flex align-items-center justify-content-between">
-          <router-link to="/" class="d-flex align-items-center gap-2 text-muted hover-text-dark text-decoration-none">
-            <span>← 返回</span>
-          </router-link>
-          <div class="d-flex align-items-center gap-3">
-            <span class="fs-3">🔧</span>
-            <h1 class="fs-2 fw-bold text-dark">增幅模拟器</h1>
-            <span class="fs-3">🔧</span>
-          </div>
-          <div style="width: 4rem;"></div>
-        </div>
-        <p class="text-center text-muted mt-1">模拟增幅过程，预测消耗和成功率</p>
-      </div>
-    </header>
-
-    <main class="container px-4 py-5">
+  <PageLayout title="增幅模拟器" icon="🔧" subtitle="模拟增幅过程，预测消耗和成功率">
       <div class="card shadow-lg border-2 border-danger mb-4">
         <div class="card-header bg-danger text-white text-center py-3">
           <h2 class="card-title fs-5 fw-bold">获取胚子</h2>
@@ -248,7 +230,7 @@
           </div>
         </div>
       </div>
-    </main>
+      <template #overlay>
 
     <!-- 通知 Toast（祝贺/勉励共用） -->
     <div class="toast-container position-fixed top-50 start-50 translate-middle p-3" style="z-index: 9999;">
@@ -319,11 +301,13 @@
         </div>
       </div>
     </div>
-  </div>
+      </template>
+  </PageLayout>
 </template>
 
 <script setup>
 import { ref, computed, nextTick } from 'vue'
+import PageLayout from '../components/PageLayout.vue'
 import { Toast } from 'bootstrap'
 
 const AMPLIFY_RULES = [
