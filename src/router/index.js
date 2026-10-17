@@ -25,6 +25,10 @@ const routes = [
     path: '/amplify-simulator',
     name: 'AmplifySimulator',
     component: () => import('../pages/AmplifySimulator.vue')
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: '/'
   }
 ]
 

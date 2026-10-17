@@ -36,12 +36,11 @@ export const synthesize = (stoneA, stoneB) => {
   
   for (let i = 0; i < n; i++) {
     let weights
-    if (gradeA === gradeB) {
+    if (gradeA === gradeB || !crossProbabilities) {
+      // 同品级，或缺少跨品级概率配置时，退化为等概率，避免读 undefined 报错
       weights = remainingEntries.map(() => 1)
     } else {
-      weights = remainingEntries.map(entry => {
-        return crossProbabilities[entry.grade] || 1
-      })
+      weights = remainingEntries.map(entry => crossProbabilities[entry.grade] ?? 1)
     }
     
     const totalWeight = weights.reduce((sum, w) => sum + w, 0)
