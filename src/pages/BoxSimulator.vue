@@ -13,11 +13,9 @@
                 class="form-select form-select-lg"
                 :disabled="isOpening"
               >
-                <option :value="100">开启 100 个盒子</option>
-                <option :value="200">开启 200 个盒子</option>
-                <option :value="500">开启 500 个盒子</option>
-                <option :value="1000">开启 1000 个盒子</option>
-                <option :value="10000">开启 10000 个盒子</option>
+                <option v-for="count in boxCountOptions" :key="count" :value="count">
+                  开启 {{ count }} 个盒子
+                </option>
               </select>
             </div>
             <div class="col-md-6">
@@ -123,31 +121,12 @@
         </div>
         <div class="card-body">
           <div class="row">
-            <div class="col-md-6">
-              <h5 class="text-warning mb-2">太古龙晶</h5>
+            <div v-for="group in itemGroups" :key="group.title" class="col-md-6">
+              <h5 class="mb-2" :class="group.headingClass">{{ group.title }}</h5>
               <ul class="list-unstyled small">
-                <li>太古龙晶*10：0.0010%</li>
-                <li>太古龙晶*8：0.0018%</li>
-                <li>太古龙晶*6：0.0032%</li>
-                <li>太古龙晶*4：0.0053%</li>
-                <li>太古龙晶*2：0.0101%</li>
-              </ul>
-            </div>
-            <div class="col-md-6">
-              <h5 class="text-success mb-2">龙之雷焰</h5>
-              <ul class="list-unstyled small">
-                <li>龙之雷焰*10：0.15%</li>
-                <li>龙之雷焰*8：0.65%</li>
-                <li>龙之雷焰*6：1.8%</li>
-                <li>龙之雷焰*4：3.5%</li>
-                <li>龙之雷焰*2：9.25%</li>
-              </ul>
-            </div>
-            <div class="col-md-6">
-              <h5 class="text-info mb-2">其他物品</h5>
-              <ul class="list-unstyled small">
-                <li>矛盾的结晶体*1：10%</li>
-                <li>深渊-调律之痕*5：74.6286%</li>
+                <li v-for="item in group.items" :key="`${item.name}-${item.amount}`">
+                  {{ item.name }}*{{ item.amount }}：{{ item.display }}
+                </li>
               </ul>
             </div>
           </div>
@@ -159,8 +138,10 @@
 <script setup>
 import { ref, reactive, computed } from 'vue'
 import PageLayout from '../components/PageLayout.vue'
+import { BOX_ITEMS, BOX_ITEM_GROUPS, BOX_COUNT_OPTIONS } from '../constants/boxData'
 
-const boxCount = ref(100)
+const boxCount = ref(BOX_COUNT_OPTIONS[0])
+const boxCountOptions = BOX_COUNT_OPTIONS
 const isOpening = ref(false)
 const progress = ref(0)
 const currentResults = reactive({
@@ -185,20 +166,21 @@ const stats = reactive({
   深渊调律之痕: 0
 })
 
-const ITEMS = [
-  { name: '太古龙晶', amount: 10, probability: 0.0010 },
-  { name: '太古龙晶', amount: 8, probability: 0.0018 },
-  { name: '太古龙晶', amount: 6, probability: 0.0032 },
-  { name: '太古龙晶', amount: 4, probability: 0.0053 },
-  { name: '太古龙晶', amount: 2, probability: 0.0101 },
-  { name: '龙之雷焰', amount: 10, probability: 0.15 },
-  { name: '龙之雷焰', amount: 8, probability: 0.65 },
-  { name: '龙之雷焰', amount: 6, probability: 1.8 },
-  { name: '龙之雷焰', amount: 4, probability: 3.5 },
-  { name: '龙之雷焰', amount: 2, probability: 9.25 },
-  { name: '矛盾的结晶体', amount: 1, probability: 10 },
-  { name: '深渊-调律之痕', amount: 5, probability: 74.6286 }
-]
+const ITEMS = BOX_ITEMS
+
+// 概率说明表格的分组：除了显式分组的物品，其余归入"其他物品"
+const computeItemGroups = () => {
+  const named = BOX_ITEM_GROUPS.filter(group => group.itemName).map(group => group.itemName)
+  return BOX_ITEM_GROUPS.map(group => ({
+    title: group.title,
+    headingClass: group.headingClass,
+    items: group.itemName === null
+      ? BOX_ITEMS.filter(item => !named.includes(item.name))
+      : BOX_ITEMS.filter(item => item.name === group.itemName)
+  }))
+}
+
+const itemGroups = computeItemGroups()
 
 const openBox = () => {
   const random = Math.random() * 100

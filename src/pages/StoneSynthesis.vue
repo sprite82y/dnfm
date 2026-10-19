@@ -81,9 +81,7 @@
                 <div class="col-md-6">
                   <h5 class="text-warning mb-2">不同品级合成</h5>
                   <ul class="list-unstyled small">
-                    <li>史诗+神器：史诗词条 20.22%，神器词条 6.37%</li>
-                    <li>史诗+稀有：史诗词条 22.89%，稀有词条 4.21%</li>
-                    <li>神器+稀有：神器词条 23.57%，稀有词条 14.64%</li>
+                    <li v-for="rule in crossGradeTexts" :key="rule.key">{{ rule.text }}</li>
                   </ul>
                 </div>
               </div>
@@ -101,6 +99,9 @@ import StoneConfigPanel from '../components/StoneConfigPanel.vue'
 import SynthesisResult from '../components/SynthesisResult.vue'
 import SynthesisStats from '../components/SynthesisStats.vue'
 import { synthesize } from '../utils/synthesis'
+import { crossGradeProbabilityTexts } from '../constants/stoneData'
+
+const crossGradeTexts = crossGradeProbabilityTexts()
 
 const stoneA = ref({ grade: '', crownCount: 0 })
 const stoneB = ref({ grade: '', crownCount: 0 })

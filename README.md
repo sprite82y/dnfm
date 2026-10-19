@@ -50,6 +50,9 @@ npm run build
 
 # 预览构建结果
 npm run preview
+
+# 运行测试（Node 内置 test runner，无需额外依赖）
+npm test
 ```
 
 ## 📁 项目结构
@@ -61,8 +64,10 @@ src/
 │   ├── StoneConfigPanel.vue    # 源石配置面板
 │   ├── SynthesisResult.vue     # 合成结果显示
 │   └── SynthesisStats.vue      # 合成统计
-├── constants/          # 常量配置
-│   └── stoneData.js            # 源石概率数据
+├── constants/          # 游戏数值（领域权威数据，勿取整/勿"修正"）
+│   ├── stoneData.js            # 源石品级、跨品级概率
+│   ├── boxData.js              # 超武盒子掉落物与概率
+│   └── amplifyData.js          # 增幅成功率、消耗、失败规则
 ├── pages/              # 页面组件
 │   ├── Home.vue                # 首页
 │   ├── StoneSynthesis.vue      # 源石合成
@@ -76,7 +81,22 @@ src/
 ├── style.css                   # 主题补充样式（须在 Bootstrap 之后引入）
 ├── App.vue
 └── main.js
+
+tests/
+├── constants.test.js           # 数值与规则的回归断言
+└── register-loader.mjs         # 让 Node 解析无扩展名导入
 ```
+
+## 🧪 测试
+
+`npm test` 使用 Node 内置的 `node:test`，**不需要安装 vitest 等任何依赖**。当前覆盖：
+
+- 源石品级词条数、跨品级概率保持原始精度（`20.22%` 不会变成 `20%`）
+- 盒子概率合计为 100%、`0.0010` 这类尾随零通过 `display` 字段保留
+- 增幅每级成功率/消耗、失败规则边界（5~7 减1、8~10 减3、11+ 损坏）
+- 页面概率说明文案由常量生成，且与数值一致
+
+无扩展名导入（如 `from '../constants/stoneData'`）是 Vite 支持的写法，Node 原生 ESM 不认，因此测试通过 `tests/register-loader.mjs` 注册解析钩子来补齐，**不需要为了测试去改动生产代码**。
 
 ## 🎨 样式约定
 

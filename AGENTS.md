@@ -5,7 +5,8 @@
 ## 命令
 
 - `npm run dev` — 开发服务器；`npm run build` — 生产构建；`npm run preview` — 预览构建结果。
-- 项目**没有 lint 和测试**。改动后通过 `npm run dev` 手动验证相关页面。
+- `npm test` — 运行常量与算法测试（Node 内置 `node:test`，零依赖，无需安装）。**改动了 `src/constants/` 下的游戏数值后必须跑一次。**
+- 项目**没有 lint**。UI 改动后仍需通过 `npm run dev` 手动验证相关页面。
 
 ## 架构
 
@@ -18,7 +19,10 @@
 ## 约定
 
 - UI 文案和游戏术语使用**中文**（如 史诗/神器/稀有 品级名）。
-- 游戏概率数据存放在 `src/constants/stoneData.js`（及类似常量文件）。这些数值对应 DNF手游游戏内真实概率，是领域权威数据，重构时不要"修正"或取整。
+- 游戏概率与消耗数据一律存放在 `src/constants/`（`stoneData.js` 源石、`boxData.js` 超武盒子、`amplifyData.js` 增幅）。这些数值对应 DNF手游游戏内真实概率，是领域权威数据，重构时不要"修正"或取整。
+- **不要在页面模板里手写游戏数值或概率文案**。页面的概率说明表必须由常量 `v-for` 渲染（已有：`crossGradeProbabilityTexts()`、`BOX_ITEMS`、`failureRuleSummaries()`），否则会与常量漂移。
+- 需要原样展示的小数位（如 `0.0010`）不能只靠 JS 数值，JS 会把 `0.0010` 变成 `0.001`。这类数值在常量里同时提供 `display` 字段。
+- 新增游戏数值时，同步在 `tests/constants.test.js` 补断言。
 - 样式全部使用 Bootstrap 5（在 `src/main.js` 全局引入），另加 `src/style.css`，不引入其他 CSS 框架。
 
 ## 提交规范

@@ -116,7 +116,7 @@
                       id="useLuckyCharm"
                     />
                     <label class="form-check-label" for="useLuckyCharm">
-                      使用（+5%成功率）
+                      使用（+{{ LUCKY_CHARM_BONUS }}%成功率）
                     </label>
                   </div>
                 </div>
@@ -224,9 +224,9 @@
           </div>
           <div class="mt-4 text-muted small">
             <p class="mb-1">📌 失败规则：</p>
-            <p class="mb-1">• 目标等级 5~7：失败等级 -1</p>
-            <p class="mb-1">• 目标等级 8~10：失败等级 -3</p>
-            <p>• 目标等级 11+：失败胚子直接损坏</p>
+            <p v-for="rule in failureRules" :key="rule.range" class="mb-1">
+              • 目标等级 {{ rule.range }}：{{ rule.label }}
+            </p>
           </div>
         </div>
       </div>
@@ -309,23 +309,15 @@
 import { ref, computed, nextTick } from 'vue'
 import PageLayout from '../components/PageLayout.vue'
 import { Toast } from 'bootstrap'
+import {
+  AMPLIFY_RULES,
+  MAX_LEVEL,
+  LUCKY_CHARM_BONUS,
+  getFailureRule,
+  failureRuleSummaries
+} from '../constants/amplifyData'
 
-const AMPLIFY_RULES = [
-  { level: 1, rate: 100, weaponContradiction: 35, nonWeaponContradiction: 26, luckyCharm: 0 },
-  { level: 2, rate: 100, weaponContradiction: 53, nonWeaponContradiction: 39, luckyCharm: 0 },
-  { level: 3, rate: 100, weaponContradiction: 73, nonWeaponContradiction: 54, luckyCharm: 0 },
-  { level: 4, rate: 100, weaponContradiction: 97, nonWeaponContradiction: 72, luckyCharm: 0 },
-  { level: 5, rate: 80, weaponContradiction: 126, nonWeaponContradiction: 94, luckyCharm: 1 },
-  { level: 6, rate: 70, weaponContradiction: 164, nonWeaponContradiction: 123, luckyCharm: 1 },
-  { level: 7, rate: 60, weaponContradiction: 203, nonWeaponContradiction: 152, luckyCharm: 1 },
-  { level: 8, rate: 70, weaponContradiction: 280, nonWeaponContradiction: 210, luckyCharm: 1 },
-  { level: 9, rate: 60, weaponContradiction: 357, nonWeaponContradiction: 267, luckyCharm: 1 },
-  { level: 10, rate: 50, weaponContradiction: 472, nonWeaponContradiction: 354, luckyCharm: 1 },
-  { level: 11, rate: 40, weaponContradiction: 587, nonWeaponContradiction: 440, luckyCharm: 2 },
-  { level: 12, rate: 30, weaponContradiction: 646, nonWeaponContradiction: 484, luckyCharm: 2 }
-]
-
-const MAX_LEVEL = 12
+const failureRules = failureRuleSummaries()
 
 let idSeed = 0
 
@@ -427,7 +419,7 @@ const currentRule = computed(() => {
 const currentSuccessRate = computed(() => {
   if (!currentRule.value) return 0
   let rate = currentRule.value.rate
-  if (useLuckyCharm.value && rate < 100) rate = Math.min(100, rate + 5)
+  if (useLuckyCharm.value && rate < 100) rate = Math.min(100, rate + LUCKY_CHARM_BONUS)
   return rate
 })
 
@@ -455,7 +447,7 @@ const doOneAmplify = (embryon, lucky) => {
 
   let rate = rule.rate
   const charmUsed = (rate < 100 && lucky) ? rule.luckyCharm : 0
-  if (charmUsed > 0) rate = Math.min(100, rate + 5)
+  if (charmUsed > 0) rate = Math.min(100, rate + LUCKY_CHARM_BONUS)
 
   embryon.contradictionCost += rule.contradiction
   embryon.luckyCharmCost += charmUsed
@@ -475,12 +467,11 @@ const doOneAmplify = (embryon, lucky) => {
     return true
   } else {
     embryon.failCount++
-    if (targetLevel >= 11) {
+    const failure = getFailureRule(targetLevel)
+    if (failure.action === 'break') {
       embryon.broken = true
-    } else if (targetLevel >= 8) {
-      embryon.level = Math.max(0, embryon.level - 3)
-    } else if (targetLevel >= 5) {
-      embryon.level = Math.max(0, embryon.level - 1)
+    } else if (failure.action === 'down') {
+      embryon.level = Math.max(0, embryon.level - failure.amount)
     }
     return false
   }
