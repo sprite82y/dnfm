@@ -7,7 +7,8 @@ import {
   STONE_GRADES,
   GRADE_CONFIG,
   CROSS_GRADE_PROBABILITIES,
-  crossGradeProbabilityTexts
+  crossGradeProbabilityTexts,
+  firstDrawProbabilities
 } from '../src/constants/stoneData.js'
 import { BOX_ITEMS, BOX_ITEM_GROUPS, BOX_COUNT_OPTIONS } from '../src/constants/boxData.js'
 import {
@@ -40,12 +41,120 @@ test('跨品级概率保持游戏内原始数值，未取整', () => {
   assert.deepEqual(CROSS_GRADE_PROBABILITIES, expected)
 })
 
-test('跨品级概率说明文案与数据一致', () => {
+test('跨品级概率说明文案与数据一致（文案表述为「权重」而非「概率」）', () => {
   const texts = crossGradeProbabilityTexts()
   assert.equal(texts.length, 3)
-  assert.equal(texts[0].text, '史诗+神器：史诗词条 20.22%，神器词条 6.37%')
-  assert.equal(texts[1].text, '史诗+稀有：史诗词条 22.89%，稀有词条 4.21%')
-  assert.equal(texts[2].text, '神器+稀有：神器词条 23.57%，稀有词条 14.64%')
+  assert.equal(texts[0].text, '史诗+神器：史诗词条权重 20.22，神器词条权重 6.37')
+  assert.equal(texts[1].text, '史诗+稀有：史诗词条权重 22.89，稀有词条权重 4.21')
+  assert.equal(texts[2].text, '神器+稀有：神器词条权重 23.57，稀有词条权重 14.64')
+  // 防止有人把表述改回「概率」，那会与首抽 80.89% 的事实矛盾
+  for (const t of texts) {
+    assert.ok(!t.text.includes('%'), '权重文案不应带百分号')
+  }
+})
+
+// 概率模型的权威口径：
+// 1) 同品级 → 剩余词条等概率
+// 2) 不同品级 → 按 CROSS_GRADE_PROBABILITIES 里的权重加权
+// 3) 抽取不放回 → 每抽一条后剩余比例重新计算
+// 下面用精确枚举（Plackett-Luce）把这三条钉死。
+
+/** 精确枚举：按品级权重、不放回地抽取，返回结果中 A 品级词条数的分布 */
+function exactSourceACounts (gradeA, gradeB) {
+  const probs = CROSS_GRADE_PROBABILITIES[`${gradeA}+${gradeB}`]
+  const wA = probs[gradeA]
+  const wB = probs[gradeB]
+  const a0 = GRADE_CONFIG[gradeA].entryCount
+  const b0 = GRADE_CONFIG[gradeB].entryCount
+  const memo = new Map()
+  const rec = (a, b, left) => {
+    if (left === 0) return new Map([[0, 1]])
+    const key = `${a},${b},${left}`
+    if (memo.has(key)) return memo.get(key)
+    const out = new Map()
+    const total = a * wA + b * wB
+    if (a > 0) {
+      const pr = (a * wA) / total
+      for (const [k, v] of rec(a - 1, b, left - 1)) {
+        out.set(k + 1, (out.get(k + 1) || 0) + pr * v)
+      }
+    }
+    if (b > 0) {
+      const pr = (b * wB) / total
+      for (const [k, v] of rec(a, b - 1, left - 1)) {
+        out.set(k, (out.get(k) || 0) + pr * v)
+      }
+    }
+    memo.set(key, out)
+    return out
+  }
+  return rec(a0, b0, a0)
+}
+
+test('抽取不放回：结果中 A 品级词条数的分布符合精确枚举', () => {
+  const cases = [
+    ['史诗', '神器', { 1: 1.01, 2: 19.65, 3: 57.86, 4: 21.48 }],
+    ['史诗', '稀有', { 2: 3.91, 3: 45.71, 4: 50.37 }],
+    ['神器', '稀有', { 1: 17.19, 2: 63.35, 3: 19.45 }],
+    ['稀有', '史诗', { 0: 81.58, 1: 18.05, 2: 0.37 }]
+  ]
+  for (const [gradeA, gradeB, expected] of cases) {
+    const dist = exactSourceACounts(gradeA, gradeB)
+    for (const [count, expectPct] of Object.entries(expected)) {
+      const actualPct = (dist.get(Number(count)) || 0) * 100
+      assert.ok(
+        Math.abs(actualPct - expectPct) < 0.02,
+        `${gradeA}+${gradeB} 抽到 ${count} 条 ${gradeA}: 期望 ${expectPct}%, 实际 ${actualPct.toFixed(2)}%`
+      )
+    }
+  }
+})
+
+test('抽取不放回：实测分布与精确枚举一致（含顺序影响）', () => {
+  // 不放回的关键证据：把 A/B 顺序调换后分布不同（因为各自条数不同）
+  const forward = exactSourceACounts('史诗', '神器')
+  const reverse = exactSourceACounts('神器', '史诗')
+  const mean = (dist) => [...dist.entries()].reduce((s, [k, v]) => s + k * v, 0)
+  assert.ok(mean(forward) > 2.9, '史诗在前时结果以史诗词条为主')
+  assert.ok(mean(reverse) < 0.8, '神器在前时结果以神器词条为主')
+
+  // 实测抽样收敛到理论值
+  const N = 60000
+  const hist = {}
+  for (let i = 0; i < N; i++) {
+    const r = synthesize({ grade: '史诗', crownCount: 0 }, { grade: '神器', crownCount: 0 })
+    const k = r.entries.filter(e => e.source === 'A').length
+    hist[k] = (hist[k] || 0) + 1
+  }
+  for (const [k, v] of forward) {
+    const simulated = (hist[k] || 0) / N
+    assert.ok(
+      Math.abs(simulated - v) < 0.01,
+      `${k} 条: 理论 ${(v * 100).toFixed(2)}%, 实测 ${(simulated * 100).toFixed(2)}%`
+    )
+  }
+})
+
+test('首次抽取概率不等于权重本身（权重需按条数放大）', () => {
+  const first = firstDrawProbabilities('史诗', '神器')
+  const epic = first.find(f => f.grade === '史诗')
+  const artifact = first.find(f => f.grade === '神器')
+  // 4×20.22 vs 3×6.37
+  assert.ok(Math.abs(epic.probability - 80.89) < 0.02, `史诗首抽应为 80.89%，实际 ${epic.probability.toFixed(2)}%`)
+  assert.ok(Math.abs(artifact.probability - 19.11) < 0.02)
+  assert.ok(Math.abs(epic.probability + artifact.probability - 100) < 1e-9, '同一组首抽概率应合计 100%')
+})
+
+test('同品级合成时所有剩余词条等概率（不受权重影响）', () => {
+  // 同品级时不存在跨品级权重，应退化为等概率：
+  // 史诗2冠 + 史诗2冠，抽 4 条，皇冠数服从超几何分布，均值 2
+  const N = 40000
+  let sum = 0
+  for (let i = 0; i < N; i++) {
+    const r = synthesize({ grade: '史诗', crownCount: 2 }, { grade: '史诗', crownCount: 2 })
+    sum += r.entries.filter(e => e.isCrown).length
+  }
+  assert.ok(Math.abs(sum / N - 2) < 0.03, `同品级等概率时平均皇冠数应为 2，实际 ${(sum / N).toFixed(3)}`)
 })
 
 test('合成结果条数取决于源石A的品级', () => {

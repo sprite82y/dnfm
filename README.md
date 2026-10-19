@@ -122,4 +122,4 @@ npm run build
 
 ## 📄 License
 
-MIT
+[MIT](./LICENSE) © 2026 wanghz

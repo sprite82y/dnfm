@@ -43,6 +43,9 @@
               <p v-if="validationMessage" class="text-danger small mb-3">
                 {{ validationMessage }}
               </p>
+              <p v-else-if="duplicatedKey" class="text-warning-emphasis small mb-3">
+                该参数组合已存在，结果见右侧表格中高亮行（未重复添加）。
+              </p>
               <div class="d-flex gap-3">
                 <button
                   @click="calculate"
@@ -95,8 +98,18 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="(result, index) in results" :key="index">
-                      <td>{{ result.currentAttr }}</td>
+                    <tr
+                      v-for="(result, index) in results"
+                      :key="resultKey(result)"
+                      :class="duplicatedKey === resultKey(result) ? 'table-warning' : ''"
+                    >
+                      <td>
+                        {{ result.currentAttr }}
+                        <span
+                          v-if="duplicatedKey === resultKey(result)"
+                          class="badge bg-warning text-dark ms-1"
+                        >本次输入</span>
+                      </td>
                       <td>{{ formatPercent(result.damageIncrease) }}</td>
                       <td>{{ result.attrIncrease }}</td>
                       <td>{{ formatPercent(result.attrTotalDamageIncrease) }}</td>
@@ -160,6 +173,12 @@ const inputData = ref({
 const results = ref([])
 const lastResult = ref(null)
 
+// 最近一次计算命中的重复记录键（用于高亮已有行并给出行内提示）
+const duplicatedKey = ref(null)
+
+// 一条记录的唯一标识：当前属强 | 提升属强 | 基础白字
+const resultKey = (r) => `${r.currentAttr}|${r.attrIncrease}|${r.baseWhite}`
+
 // v-model.number 在输入框清空时返回空字符串、输入非法内容时返回原字符串，
 // 因此不能用 !== null 判断，必须显式校验是一个有限数字。
 const isValidNumber = (value) => typeof value === 'number' && Number.isFinite(value)
@@ -216,24 +235,36 @@ const calculate = () => {
     finalIncrease
   }
 
-  const exists = results.value.some(r => 
+  const exists = results.value.some(r =>
     r.currentAttr === currentAttr &&
     r.attrIncrease === attrIncrease &&
     r.baseWhite === baseWhite
   )
 
   lastResult.value = finalIncrease
-  if (!exists) {
-    results.value.unshift(result)
+
+  if (exists) {
+    // 已存在相同参数：不重复插入，但要明确告知，否则用户会以为按钮坏了
+    duplicatedKey.value = resultKey(result)
+    return
   }
+
+  duplicatedKey.value = null
+  results.value.unshift(result)
 }
 
 const removeResult = (index) => {
+  const removed = results.value[index]
   results.value.splice(index, 1)
+  // 删掉的正是被标记的重复行时，一并清掉提示
+  if (removed && duplicatedKey.value === resultKey(removed)) {
+    duplicatedKey.value = null
+  }
 }
 
 const clearResults = () => {
   results.value = []
   lastResult.value = null
+  duplicatedKey.value = null
 }
 </script>

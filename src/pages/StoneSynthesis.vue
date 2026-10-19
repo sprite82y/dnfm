@@ -76,14 +76,34 @@
               <div class="row">
                 <div class="col-md-6">
                   <h5 class="text-warning mb-2">同品级合成</h5>
-                  <p>两个源石品级相同时，所有词条概率均等</p>
+                  <p class="small mb-3">两个源石品级相同时，所有剩余词条被抽到的机会均等。</p>
+
+                  <h5 class="text-warning mb-2">抽取方式</h5>
+                  <p class="small mb-2">
+                    每次从当前剩余词条中抽取一条，<strong>抽走即不放回</strong>，
+                    因此前一条抽走后，剩余词条的权重比例会重新计算。
+                  </p>
                 </div>
                 <div class="col-md-6">
                   <h5 class="text-warning mb-2">不同品级合成</h5>
-                  <ul class="list-unstyled small">
+                  <p class="small mb-2">
+                    每条词条被抽到的机会与<strong>它的品级权重</strong>成正比。权重如下：
+                  </p>
+                  <ul class="list-unstyled small mb-3">
                     <li v-for="rule in crossGradeTexts" :key="rule.key">{{ rule.text }}</li>
                   </ul>
+                  <p class="small mb-0">
+                    权重不是成品概率：某品级最终出现几条，还要看该品级共有多少条词条参与抽取。
+                  </p>
                 </div>
+              </div>
+              <div class="border-top border-secondary-subtle mt-3 pt-3 small">
+                <p class="mb-1">
+                  <strong>结果条数</strong>：等于源石 A 的词条数（史诗 4 条 / 神器 3 条 / 稀有 2 条）。
+                </p>
+                <p class="mb-0">
+                  <strong>最终品级</strong>：与源石 A 相同。
+                </p>
               </div>
             </div>
           </div>
