@@ -1,5 +1,5 @@
 <template>
-  <div class="min-vh-100 bg-gradient">
+  <div class="min-vh-100">
     <header class="glass-card border-bottom border-secondary-subtle shadow-sm">
       <div class="container px-4 py-4">
         <div v-if="showBack" class="d-flex align-items-center justify-content-between">

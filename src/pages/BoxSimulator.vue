@@ -1,7 +1,7 @@
 <template>
   <PageLayout title="超武盒子模拟器" icon="📦" subtitle="模拟开启超武盒子，预测获得物品">
-      <div class="card shadow-lg border-2 border-orange mb-4">
-        <div class="card-header bg-orange text-white text-center py-4">
+      <div class="card shadow-lg border-2 app-border-orange mb-4">
+        <div class="card-header app-bg-orange text-white text-center py-4">
           <h2 class="card-title fs-5 fw-bold">开启盒子</h2>
         </div>
         <div class="card-body">
@@ -36,8 +36,8 @@
 
       <div class="row g-4 mb-4">
         <div class="col-lg-6">
-          <div class="card shadow-lg border-2 border-purple h-100">
-            <div class="card-header bg-purple text-white text-center py-3">
+          <div class="card shadow-lg border-2 app-border-purple h-100">
+            <div class="card-header app-bg-purple text-white text-center py-3">
               <h3 class="card-title fs-6 fw-bold">本次开启结果</h3>
             </div>
             <div class="card-body">
@@ -256,9 +256,3 @@ const openBoxes = async () => {
   isOpening.value = false
 }
 </script>
-
-<style scoped>
-.hover-bg-warning:hover {
-  background-color: #f59e0b;
-}
-</style>

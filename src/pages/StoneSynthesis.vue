@@ -195,9 +195,3 @@ const handleBatchSynthesize = () => {
   runBatch()
 }
 </script>
-
-<style scoped>
-.hover-bg-warning:hover {
-  background-color: #f59e0b;
-}
-</style>

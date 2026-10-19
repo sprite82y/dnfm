@@ -10,8 +10,8 @@
                 <p class="text-muted mt-2">模拟源石合成过程，预测合成结果和皇冠词条概率</p>
                 <div class="mt-4">
                   <span class="badge bg-warning text-dark">合成</span>
-                  <span class="badge bg-purple text-white">概率</span>
-                  <span class="badge bg-pink text-white">词条</span>
+                  <span class="badge app-bg-purple text-white">概率</span>
+                  <span class="badge app-bg-pink text-white">词条</span>
                 </div>
               </div>
             </div>
@@ -44,7 +44,7 @@
                 <p class="text-muted mt-2">模拟开启超武盒子，预测获得太古龙晶等物品</p>
                 <div class="mt-4">
                   <span class="badge bg-warning text-dark">盒子</span>
-                  <span class="badge bg-orange text-white">龙晶</span>
+                  <span class="badge app-bg-orange text-white">龙晶</span>
                   <span class="badge bg-success text-white">雷焰</span>
                 </div>
               </div>
@@ -127,9 +127,3 @@
 <script setup>
 import PageLayout from '../components/PageLayout.vue'
 </script>
-
-<style scoped>
-.hover-shadow-lg:hover {
-  box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175);
-}
-</style>

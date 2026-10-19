@@ -221,9 +221,3 @@ const removeResult = (index) => {
   results.value.splice(index, 1)
 }
 </script>
-
-<style scoped>
-.hover-bg-warning:hover {
-  background-color: #f59e0b;
-}
-</style>

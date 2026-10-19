@@ -34,7 +34,7 @@
 | Vue | 3.5 | Composition API + `<script setup>` |
 | Bootstrap | 5.3 | UI 样式框架 |
 | Vue Router | 4.6 | Hash 模式路由 |
-| Vite | 6.3 | 构建工具 |
+| Vite | 8 | 构建工具（rolldown） |
 
 ## 🚀 快速开始
 
@@ -57,6 +57,7 @@ npm run preview
 ```
 src/
 ├── components/          # 可复用组件
+│   ├── PageLayout.vue          # 页面统一布局（页头/内容/页脚）
 │   ├── StoneConfigPanel.vue    # 源石配置面板
 │   ├── SynthesisResult.vue     # 合成结果显示
 │   └── SynthesisStats.vue      # 合成统计
@@ -72,10 +73,16 @@ src/
 │   └── index.js                # 路由配置
 ├── utils/
 │   └── synthesis.js            # 合成算法
-├── style.css                   # 全局样式
+├── style.css                   # 主题补充样式（须在 Bootstrap 之后引入）
 ├── App.vue
 └── main.js
 ```
+
+## 🎨 样式约定
+
+- `main.js` 中**必须先引 Bootstrap 再引 `style.css`**，否则项目样式会被 Bootstrap 带 `!important` 的工具类覆盖。
+- Bootstrap 5 没有的品级配色统一加 `app-` 前缀（`app-bg-purple` / `app-bg-orange` / `app-bg-pink` / `app-border-purple` / `app-border-orange`），避免与 `.bg-gradient` 这类 Bootstrap 自带类撞名。
+- Bootstrap JS 统一从 `bootstrap`(ESM) 引入，不要再用 `bootstrap/dist/js/bootstrap.bundle.min.js`，否则同一页面会出现两份互不相知的 Bootstrap 实例。
 
 ## 🌐 部署说明
 

@@ -126,10 +126,3 @@ const onCrownCountChange = () => {
   })
 }
 </script>
-
-<style scoped>
-.crown-bg {
-  background: linear-gradient(to right, #fefce8, #fffbeb);
-  border-color: #fde68a;
-}
-</style>

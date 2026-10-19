@@ -80,7 +80,7 @@ const getBarClass = (crown) => {
     1: 'bg-primary',
     2: 'bg-success',
     3: 'bg-warning',
-    4: 'bg-purple'
+    4: 'app-bg-purple'
   }
   return classes[crown] || 'bg-secondary'
 }

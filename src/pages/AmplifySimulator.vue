@@ -516,8 +516,4 @@ const doAutoAmplify10 = () => {
 .fs-xl {
   font-size: 1.5rem;
 }
-
-.hover-bg-warning:hover {
-  background-color: #f59e0b;
-}
 </style>

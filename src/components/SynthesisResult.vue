@@ -59,8 +59,8 @@ const props = defineProps({
 const gradeBgClass = computed(() => {
   if (!props.result) return 'bg-light'
   const grade = props.result.grade
-  if (grade === '史诗') return 'bg-purple'
-  if (grade === '神器') return 'bg-orange'
+  if (grade === '史诗') return 'app-bg-purple'
+  if (grade === '神器') return 'app-bg-orange'
   if (grade === '稀有') return 'bg-primary'
   return 'bg-secondary'
 })
@@ -68,8 +68,8 @@ const gradeBgClass = computed(() => {
 const gradeBorderClass = computed(() => {
   if (!props.result) return 'border-secondary'
   const grade = props.result.grade
-  if (grade === '史诗') return 'border-purple'
-  if (grade === '神器') return 'border-orange'
+  if (grade === '史诗') return 'app-border-purple'
+  if (grade === '神器') return 'app-border-orange'
   if (grade === '稀有') return 'border-primary'
   return 'border-secondary'
 })
@@ -84,10 +84,3 @@ const normalCount = computed(() => {
   return props.result.entries.filter(e => !e.isCrown).length
 })
 </script>
-
-<style scoped>
-.crown-bg {
-  background: linear-gradient(to right, #fefce8, #fffbeb);
-  border-color: #fcd34d;
-}
-</style>
