@@ -157,7 +157,7 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import PageLayout from '../components/PageLayout.vue'
 
 const boxCount = ref(100)
@@ -171,12 +171,12 @@ const currentResults = reactive({
 })
 const totalBoxes = ref(0)
 
-const hasCurrentResult = () => {
+const hasCurrentResult = computed(() => {
   return currentResults.太古龙晶 > 0 || 
          currentResults.龙之雷焰 > 0 || 
          currentResults.矛盾的结晶体 > 0 || 
          currentResults.深渊调律之痕 > 0
-}
+})
 
 const stats = reactive({
   太古龙晶: 0,

@@ -12,6 +12,7 @@
                 <input
                   v-model.number="inputData.currentAttr"
                   type="number"
+                  min="0"
                   class="form-control"
                   placeholder="请输入当前属强"
                 />
@@ -21,6 +22,7 @@
                 <input
                   v-model.number="inputData.attrIncrease"
                   type="number"
+                  min="0"
                   class="form-control"
                   placeholder="请输入提升的属强"
                 />
@@ -30,10 +32,14 @@
                 <input
                   v-model.number="inputData.baseWhite"
                   type="number"
+                  min="0"
                   class="form-control"
                   placeholder="请输入基础白字"
                 />
               </div>
+              <p v-if="validationMessage" class="text-danger small mb-3">
+                {{ validationMessage }}
+              </p>
               <div class="d-flex gap-3">
                 <button
                   @click="calculate"
@@ -143,10 +149,32 @@ const inputData = ref({
 const results = ref([])
 const lastResult = ref(null)
 
+// v-model.number 在输入框清空时返回空字符串、输入非法内容时返回原字符串，
+// 因此不能用 !== null 判断，必须显式校验是一个有限数字。
+const isValidNumber = (value) => typeof value === 'number' && Number.isFinite(value)
+
+const isBlank = (value) => value === null || value === undefined || value === ''
+
+// 仅在用户确实填了非法内容时给出红字提示；留空只禁用按钮，不提前报错
+const validationMessage = computed(() => {
+  const { currentAttr, attrIncrease, baseWhite } = inputData.value
+  if (!isBlank(currentAttr) && (!isValidNumber(currentAttr) || currentAttr < 0)) {
+    return '当前属强需为不小于 0 的数字'
+  }
+  if (!isBlank(attrIncrease) && (!isValidNumber(attrIncrease) || attrIncrease < 0)) {
+    return '提升属强需为不小于 0 的数字'
+  }
+  if (!isBlank(baseWhite) && (!isValidNumber(baseWhite) || baseWhite < 0)) {
+    return '基础白字需为不小于 0 的数字'
+  }
+  return ''
+})
+
 const canCalculate = computed(() => {
-  return inputData.value.currentAttr !== null && 
-         inputData.value.attrIncrease !== null &&
-         inputData.value.baseWhite !== null
+  const { currentAttr, attrIncrease, baseWhite } = inputData.value
+  return isValidNumber(currentAttr) && currentAttr >= 0 &&
+         isValidNumber(attrIncrease) && attrIncrease >= 0 &&
+         isValidNumber(baseWhite) && baseWhite >= 0
 })
 
 const formatPercent = (value) => {

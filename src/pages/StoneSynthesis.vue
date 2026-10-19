@@ -2,7 +2,7 @@
   <PageLayout title="源石合成模拟器" icon="💎" subtitle="模拟源石合成，预测合成结果">
       <div class="row g-4">
         <div class="col-lg-4">
-          <StoneConfigPanel title="源石A" v-model="stoneA" />
+          <StoneConfigPanel title="源石A" v-model="stoneA" :disabled="isBatchRunning" />
         </div>
 
         <div class="col-lg-4 d-flex flex-column justify-content-center">
@@ -47,7 +47,7 @@
         </div>
 
         <div class="col-lg-4">
-          <StoneConfigPanel title="源石B" v-model="stoneB" />
+          <StoneConfigPanel title="源石B" v-model="stoneB" :disabled="isBatchRunning" />
         </div>
       </div>
 
@@ -138,6 +138,8 @@ const resetStats = () => {
 watch(
   [stoneA, stoneB],
   () => {
+    // 批量进行中配置已被锁定，此处若仍被触发只会让统计口径错乱，故直接忽略
+    if (isBatchRunning.value) return
     resetStats()
     synthesisResult.value = null
   },

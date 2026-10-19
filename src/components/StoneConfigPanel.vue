@@ -9,6 +9,7 @@
         <select
           v-model="localGrade"
           class="form-select"
+          :disabled="disabled"
           @change="onGradeChange"
         >
           <option value="">请选择品级</option>
@@ -23,7 +24,7 @@
         <select
           v-model="localCrownCount"
           class="form-select"
-          :disabled="!localGrade"
+          :disabled="!localGrade || disabled"
           @change="onCrownCountChange"
         >
           <option value="">请先选择品级</option>
@@ -71,6 +72,11 @@ const props = defineProps({
   modelValue: {
     type: Object,
     default: () => ({ grade: '', crownCount: 0 })
+  },
+  // 批量合成等耗时流程进行中时锁定面板，避免结果与统计口径不一致
+  disabled: {
+    type: Boolean,
+    default: false
   }
 })
 
