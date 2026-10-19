@@ -62,7 +62,7 @@
           <SynthesisResult v-else :result="synthesisResult" />
         </div>
         <div class="col-lg-4">
-          <SynthesisStats :stats="stats" />
+          <SynthesisStats :stats="stats" @reset="handleResetStats" />
         </div>
       </div>
 
@@ -134,6 +134,14 @@ const resetStats = () => {
     3: 0,
     4: 0
   }
+}
+
+// 手动重置：清空统计与上一次的合成结果，配置保持不变
+const handleResetStats = () => {
+  if (isBatchRunning.value) return
+  resetStats()
+  synthesisResult.value = null
+  batchProgress.value = 0
 }
 
 watch(

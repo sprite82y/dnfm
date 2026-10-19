@@ -8,7 +8,6 @@ export const generateEntries = (grade, crownCount) => {
     entries.push({
       id: `${grade}-${i}`,
       isCrown: i < crownCount,
-      label: i < crownCount ? '皇冠' : '普通',
       grade: grade
     })
   }
@@ -67,7 +66,6 @@ export const synthesize = (stoneA, stoneB) => {
     entries: result.map((e, index) => ({
       id: `result-${index}`,
       isCrown: e.isCrown,
-      label: e.isCrown ? '皇冠' : '普通',
       source: e.source
     }))
   }

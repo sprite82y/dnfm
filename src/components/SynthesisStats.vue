@@ -1,7 +1,15 @@
 <template>
   <div class="card shadow-sm">
-    <div class="card-header bg-light">
+    <div class="card-header bg-light d-flex align-items-center justify-content-between">
       <h4 class="card-title mb-0">📊 合成统计</h4>
+      <button
+        v-if="stats.total > 0"
+        type="button"
+        class="btn btn-sm btn-outline-secondary"
+        @click="emit('reset')"
+      >
+        重置
+      </button>
     </div>
     <div class="card-body">
       <div class="text-center mb-4">
@@ -59,6 +67,8 @@ const props = defineProps({
     })
   }
 })
+
+const emit = defineEmits(['reset'])
 
 const getPercentage = (crown) => {
   if (props.stats.total === 0) return 0

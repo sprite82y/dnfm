@@ -18,7 +18,7 @@
       </div>
 
       <div v-if="result" class="mt-4">
-        <label class="form-label">合成后词条</label>
+        <div class="form-label">合成后词条</div>
         <ul class="list-group">
           <li
             v-for="(entry, index) in result.entries"

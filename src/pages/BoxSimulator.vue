@@ -7,8 +7,9 @@
         <div class="card-body">
           <div class="row justify-content-center align-items-center">
             <div class="col-md-6">
-              <label class="form-label text-secondary fw-bold mb-2">选择盒子数量</label>
+              <label class="form-label text-secondary fw-bold mb-2" for="boxCount">选择盒子数量</label>
               <select
+                id="boxCount"
                 v-model="boxCount"
                 class="form-select form-select-lg"
                 :disabled="isOpening"
@@ -78,12 +79,21 @@
               <h3 class="card-title fs-6 fw-bold">📊 累计统计</h3>
             </div>
             <div class="card-body">
-              <div class="mb-3">
-                <span class="fw-bold text-dark small">累计开启盒子：</span>
-                <span class="text-primary fw-bold fs-5">{{ totalBoxes }}</span>
-                <span class="text-dark small"> 个</span>
+              <div class="mb-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <div>
+                  <span class="fw-bold text-dark small">累计开启盒子：</span>
+                  <span class="text-primary fw-bold fs-5">{{ totalBoxes }}</span>
+                  <span class="text-dark small"> 个</span>
+                </div>
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-secondary"
+                  :disabled="isOpening || !hasAnyStats"
+                  @click="resetStats"
+                >
+                  重置累计统计
+                </button>
               </div>
-              
               <div class="row">
                 <div class="col-md-6 mb-2">
                   <div class="bg-warning-subtle rounded-3 p-2">
@@ -166,6 +176,29 @@ const stats = reactive({
   深渊调律之痕: 0
 })
 
+// 累计统计是否已有数据（决定"重置"按钮是否可点）
+const hasAnyStats = computed(() => {
+  return totalBoxes.value > 0 ||
+         stats.太古龙晶 > 0 ||
+         stats.龙之雷焰 > 0 ||
+         stats.矛盾的结晶体 > 0 ||
+         stats.深渊调律之痕 > 0
+})
+
+const resetStats = () => {
+  if (isOpening.value) return
+  totalBoxes.value = 0
+  stats.太古龙晶 = 0
+  stats.龙之雷焰 = 0
+  stats.矛盾的结晶体 = 0
+  stats.深渊调律之痕 = 0
+  currentResults.太古龙晶 = 0
+  currentResults.龙之雷焰 = 0
+  currentResults.矛盾的结晶体 = 0
+  currentResults.深渊调律之痕 = 0
+  progress.value = 0
+}
+
 const ITEMS = BOX_ITEMS
 
 // 概率说明表格的分组：除了显式分组的物品，其余归入"其他物品"
@@ -185,14 +218,15 @@ const itemGroups = computeItemGroups()
 const openBox = () => {
   const random = Math.random() * 100
   let cumulative = 0
-  
+
   for (const item of ITEMS) {
     cumulative += item.probability
     if (random <= cumulative) {
-      return { ...item, displayName: `${item.name}*${item.amount}` }
+      return item
     }
   }
-  
+
+  // 浮点累加可能略小于 random（概率合计恰好 100），兜底返回最后一项
   return ITEMS[ITEMS.length - 1]
 }
 

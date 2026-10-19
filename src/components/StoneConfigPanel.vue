@@ -5,8 +5,9 @@
     </div>
     <div class="card-body">
       <div class="mb-4">
-        <label class="form-label">源石品级</label>
+        <label class="form-label" :for="`${uid}-grade`">源石品级</label>
         <select
+          :id="`${uid}-grade`"
           v-model="localGrade"
           class="form-select"
           :disabled="disabled"
@@ -20,8 +21,9 @@
       </div>
 
       <div class="mb-4">
-        <label class="form-label">皇冠词条数</label>
+        <label class="form-label" :for="`${uid}-crown`">皇冠词条数</label>
         <select
+          :id="`${uid}-crown`"
           v-model="localCrownCount"
           class="form-select"
           :disabled="!localGrade || disabled"
@@ -39,7 +41,7 @@
       </div>
 
       <div v-if="localGrade">
-        <label class="form-label">词条列表</label>
+        <div class="form-label">词条列表</div>
         <ul class="list-group">
           <li
             v-for="(entry, index) in entries"
@@ -81,6 +83,9 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['update:modelValue'])
+
+// 同一页面会渲染多个配置面板，用唯一前缀避免 label/select 的 id 冲突
+const uid = `stone-panel-${Math.random().toString(36).slice(2, 9)}`
 
 const localGrade = ref(props.modelValue.grade)
 const localCrownCount = ref(props.modelValue.crownCount)

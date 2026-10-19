@@ -4,7 +4,7 @@ name: Deploy Vue to GitHub Pages
 on:
   push:
     branches:
-      - main # 根据你的默认分支名称修改，可能是 master
+      - main
 
 # 设置 GITHUB_TOKEN 的权限
 permissions:
@@ -27,11 +27,16 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          # Vite 8 要求 ^20.19.0 || >=22.12.0，固定到 22 更稳
+          node-version: 22
           cache: 'npm'
       
       - name: Install Dependencies
-        run: npm install
+        # 用 ci 而非 install：严格按 package-lock.json 安装，保证与本地一致
+        run: npm ci
+      
+      - name: Run Tests
+        run: npm test
       
       - name: Build Project
         run: npm run build

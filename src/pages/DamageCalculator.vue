@@ -8,8 +8,9 @@
             </div>
             <div class="card-body">
               <div class="mb-4">
-                <label class="form-label">当前属强</label>
+                <label class="form-label" for="currentAttr">当前属强</label>
                 <input
+                  id="currentAttr"
                   v-model.number="inputData.currentAttr"
                   type="number"
                   min="0"
@@ -18,8 +19,9 @@
                 />
               </div>
               <div class="mb-4">
-                <label class="form-label">提升属强</label>
+                <label class="form-label" for="attrIncrease">提升属强</label>
                 <input
+                  id="attrIncrease"
                   v-model.number="inputData.attrIncrease"
                   type="number"
                   min="0"
@@ -28,8 +30,9 @@
                 />
               </div>
               <div class="mb-4">
-                <label class="form-label">基础白字</label>
+                <label class="form-label" for="baseWhite">基础白字</label>
                 <input
+                  id="baseWhite"
                   v-model.number="inputData.baseWhite"
                   type="number"
                   min="0"
@@ -59,8 +62,16 @@
 
         <div class="col-lg-8">
           <div class="card glass-card border border-secondary-subtle shadow-sm">
-            <div class="card-header bg-light text-dark">
+            <div class="card-header bg-light text-dark d-flex align-items-center justify-content-between">
               <h4 class="card-title mb-0">计算结果</h4>
+              <button
+                v-if="results.length > 0"
+                type="button"
+                class="btn btn-sm btn-outline-secondary"
+                @click="clearResults"
+              >
+                清空记录
+              </button>
             </div>
             <div class="card-body">
               <div v-if="results.length === 0" class="text-center py-5">
@@ -71,16 +82,16 @@
                 <table class="table table-hover">
                   <thead>
                     <tr>
-                      <th>属强</th>
-                      <th>增伤</th>
-                      <th>属强提升</th>
-                      <th>属强总伤提升</th>
-                      <th>基础白字</th>
-                      <th>团武白字1</th>
-                      <th>团武白字2</th>
-                      <th>白字总伤加成</th>
-                      <th>最终加成</th>
-                      <th>操作</th>
+                      <th scope="col">属强</th>
+                      <th scope="col">增伤</th>
+                      <th scope="col">属强提升</th>
+                      <th scope="col">属强总伤提升</th>
+                      <th scope="col">基础白字</th>
+                      <th scope="col">团武白字1</th>
+                      <th scope="col">团武白字2</th>
+                      <th scope="col">白字总伤加成</th>
+                      <th scope="col">最终加成</th>
+                      <th scope="col">操作</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -219,5 +230,10 @@ const calculate = () => {
 
 const removeResult = (index) => {
   results.value.splice(index, 1)
+}
+
+const clearResults = () => {
+  results.value = []
+  lastResult.value = null
 }
 </script>

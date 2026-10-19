@@ -30,25 +30,33 @@
       </div>
 
       <div class="card shadow-lg border-2 border-primary mb-4">
-        <div class="card-header bg-primary text-white text-center py-3">
-          <h3 class="card-title fs-5 fw-bold">胚子列表</h3>
+        <div class="card-header bg-primary text-white text-center py-3 position-relative">
+          <h3 class="card-title fs-5 fw-bold mb-0">胚子列表</h3>
+          <button
+            v-if="embryons.length > 0"
+            type="button"
+            class="btn btn-sm btn-light position-absolute top-50 end-0 translate-middle-y me-3"
+            @click="resetAll"
+          >
+            清空并重置统计
+          </button>
         </div>
         <div class="card-body">
           <div v-if="embryons.length === 0" class="text-center text-muted py-5">
             请先点击"获取胚子"按钮获取胚子
           </div>
-          <div v-else class="overflow-x-auto">
+          <div v-else class="table-responsive">
             <table class="table table-hover">
               <thead>
                 <tr>
-                  <th>序号</th>
-                  <th>类型</th>
-                  <th>等级</th>
-                  <th>矛盾消耗</th>
-                  <th>幸运符消耗</th>
-                  <th>失败次数</th>
-                  <th>状态</th>
-                  <th>操作</th>
+                  <th scope="col">序号</th>
+                  <th scope="col">类型</th>
+                  <th scope="col">等级</th>
+                  <th scope="col">矛盾消耗</th>
+                  <th scope="col">幸运符消耗</th>
+                  <th scope="col">失败次数</th>
+                  <th scope="col">状态</th>
+                  <th scope="col">操作</th>
                 </tr>
               </thead>
               <tbody>
@@ -198,15 +206,15 @@
           <h3 class="card-title fs-5 fw-bold">增幅概率说明</h3>
         </div>
         <div class="card-body">
-          <div class="overflow-x-auto">
+          <div class="table-responsive">
             <table class="table table-hover">
               <thead>
                 <tr>
-                  <th>目标等级</th>
-                  <th>概率</th>
-                  <th>武器矛盾消耗</th>
-                  <th>非武器矛盾消耗</th>
-                  <th>幸运符数量</th>
+                  <th scope="col">目标等级</th>
+                  <th scope="col">概率</th>
+                  <th scope="col">武器矛盾消耗</th>
+                  <th scope="col">非武器矛盾消耗</th>
+                  <th scope="col">幸运符数量</th>
                 </tr>
               </thead>
               <tbody>
@@ -267,24 +275,31 @@
           </div>
           <div class="modal-body">
             <div class="mb-3">
-              <label class="form-label fw-bold">武器胚子数量</label>
+              <label class="form-label fw-bold" for="weaponCount">武器胚子数量</label>
               <input
+                id="weaponCount"
                 type="number"
-                v-model="weaponCount"
-                min="1"
+                v-model.number="weaponCount"
+                :min="1"
+                :max="MAX_EMBRYON_COUNT"
                 class="form-control"
                 placeholder="请输入武器胚子数量"
               />
             </div>
             <div class="mb-3">
-              <label class="form-label fw-bold">非武器胚子数量</label>
+              <label class="form-label fw-bold" for="nonWeaponCount">非武器胚子数量</label>
               <input
+                id="nonWeaponCount"
                 type="number"
-                v-model="nonWeaponCount"
-                min="1"
+                v-model.number="nonWeaponCount"
+                :min="1"
+                :max="MAX_EMBRYON_COUNT"
                 class="form-control"
                 placeholder="请输入非武器胚子数量"
               />
+              <div class="form-text">
+                每种类型最多 {{ MAX_EMBRYON_COUNT }} 个，单次最多新增 {{ MAX_EMBRYON_COUNT * 2 }} 个
+              </div>
             </div>
           </div>
           <div class="modal-footer">
@@ -321,6 +336,9 @@ const failureRules = failureRuleSummaries()
 
 let idSeed = 0
 
+// 单次可获取的每种胚子数量上限，避免误输入六位数导致表格渲染卡死页面
+const MAX_EMBRYON_COUNT = 200
+
 const weaponCount = ref(1)
 const nonWeaponCount = ref(1)
 const embryons = ref([])
@@ -335,16 +353,34 @@ const toastEl = ref(null)
 const totalAttempts = ref(0)
 const totalSuccess = ref(0)
 
+// 把输入值收敛到 1~MAX_EMBRYON_COUNT 的整数
+const clampCount = (value) => {
+  const n = Math.floor(Number(value))
+  if (!Number.isFinite(n) || n < 1) return 1
+  return Math.min(n, MAX_EMBRYON_COUNT)
+}
+
 const confirmGetEmbryons = () => {
-  for (let i = 0; i < (weaponCount.value || 0); i++) {
+  const weapon = clampCount(weaponCount.value)
+  const nonWeapon = clampCount(nonWeaponCount.value)
+  for (let i = 0; i < weapon; i++) {
     embryons.value.push(createEmbryon('武器'))
   }
-  for (let i = 0; i < (nonWeaponCount.value || 0); i++) {
+  for (let i = 0; i < nonWeapon; i++) {
     embryons.value.push(createEmbryon('非武器'))
   }
   weaponCount.value = 1
   nonWeaponCount.value = 1
   auto10Result.value = null
+}
+
+// 清空胚子并归零全部统计，便于对比两轮模拟结果
+const resetAll = () => {
+  embryons.value = []
+  selectedEmbryon.value = null
+  auto10Result.value = null
+  totalAttempts.value = 0
+  totalSuccess.value = 0
 }
 
 const createEmbryon = (type) => {
