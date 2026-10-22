@@ -17,7 +17,10 @@ export const AMPLIFY_RULES = [
   { level: 12, rate: 30, weaponContradiction: 646, nonWeaponContradiction: 484, luckyCharm: 2 }
 ]
 
-export const MAX_LEVEL = 12
+// 当前规则支持的最高增幅等级。由规则表派生而不是手写数字：
+// 后续开放更高等级时，只往 AMPLIFY_RULES 追加一条即可，
+// 满级判定、失败规则说明（failureRuleSummaries）与页面文案都会自动跟随。
+export const MAX_LEVEL = Math.max(...AMPLIFY_RULES.map(rule => rule.level))
 
 // 幸运符提供的成功率加成（百分点）
 export const LUCKY_CHARM_BONUS = 5

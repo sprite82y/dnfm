@@ -7,7 +7,9 @@
         <div class="card-body">
           <div class="d-flex flex-wrap justify-content-center gap-3">
             <button
-              class="btn btn-lg rounded-3 fw-bold transition-all bg-warning text-dark hover-bg-warning shadow-lg"
+              class="btn btn-lg rounded-3 fw-bold transition-all shadow-lg"
+              :class="isEmbryonFull ? 'bg-secondary text-muted cursor-not-allowed' : 'bg-warning text-dark hover-bg-warning'"
+              :disabled="isEmbryonFull"
               data-bs-toggle="modal"
               data-bs-target="#getEmblemModal"
             >
@@ -15,13 +17,17 @@
             </button>
             <button
               @click="quickAddEmbryon('武器')"
-              class="btn btn-lg rounded-3 fw-bold transition-all bg-warning text-dark hover-bg-warning shadow-lg"
+              :disabled="isEmbryonFull"
+              class="btn btn-lg rounded-3 fw-bold transition-all shadow-lg"
+              :class="isEmbryonFull ? 'bg-secondary text-muted cursor-not-allowed' : 'bg-warning text-dark hover-bg-warning'"
             >
               ⚔️ 武器+1
             </button>
             <button
               @click="quickAddEmbryon('非武器')"
-              class="btn btn-lg rounded-3 fw-bold transition-all bg-info text-white shadow-lg"
+              :disabled="isEmbryonFull"
+              class="btn btn-lg rounded-3 fw-bold transition-all shadow-lg"
+              :class="isEmbryonFull ? 'bg-secondary text-muted cursor-not-allowed' : 'bg-info text-white'"
             >
               🛡️ 非武器+1
             </button>
@@ -31,7 +37,10 @@
 
       <div class="card shadow-lg border-2 border-primary mb-4">
         <div class="card-header bg-primary text-white text-center py-3 position-relative">
-          <h3 class="card-title fs-5 fw-bold mb-0">胚子列表</h3>
+          <h3 class="card-title fs-5 fw-bold mb-0">
+            胚子列表
+            <span class="fs-6 fw-normal text-white-50 ms-2">{{ embryons.length }}/{{ MAX_TOTAL_EMBRYONS }}</span>
+          </h3>
           <button
             v-if="embryons.length > 0"
             type="button"
@@ -100,7 +109,11 @@
         <div class="card-body">
           <div class="row align-items-center mb-4">
             <div class="col-md-6">
-              <div class="alert alert-info mb-0">
+              <div v-if="isMaxLevel" class="alert alert-success mb-0">
+                <div class="fs-5 fw-bold mb-1">🎉 已达 +{{ MAX_LEVEL }}</div>
+                <div class="small mb-0">当前版本的最高增幅等级。</div>
+              </div>
+              <div v-else class="alert alert-info mb-0">
                 <div class="mb-2">
                   <span class="fw-bold">目标等级：</span>
                   <span class="text-warning fw-bold fs-xl">+{{ nextLevel }}</span>
@@ -135,9 +148,9 @@
                 <div class="d-flex align-items-center gap-2">
                   <button
                     @click="doAmplify"
-                    :disabled="selectedEmbryon.broken"
+                    :disabled="amplifyDisabled"
                     class="btn btn-lg rounded-3 fw-bold transition-all flex-grow-1 shadow-lg"
-                    :class="selectedEmbryon.broken ? 'bg-secondary text-muted cursor-not-allowed' : 'bg-warning text-dark hover-bg-warning'"
+                    :class="amplifyDisabled ? 'bg-secondary text-muted cursor-not-allowed' : 'bg-warning text-dark hover-bg-warning'"
                   >
                     ⚡ 增幅
                   </button>
@@ -146,18 +159,18 @@
                 <div>
                   <div class="d-flex justify-content-between align-items-center mb-1">
                     <button
-                      @click="doAutoAmplify10"
-                      :disabled="selectedEmbryon.broken"
+                      @click="doAutoAmplifyToTarget"
+                      :disabled="autoTargetDisabled"
                       class="btn btn-lg rounded-3 fw-bold transition-all shadow-lg w-100"
-                      :class="selectedEmbryon.broken ? 'bg-secondary text-muted cursor-not-allowed' : 'bg-success text-white'"
+                      :class="autoTargetDisabled ? 'bg-secondary text-muted cursor-not-allowed' : 'bg-success text-white'"
                     >
-                      🔥 一键增幅到+10
+                      {{ isAutoTargetDone ? `✅ 已到 +${AUTO_TARGET_LEVEL}` : `🔥 一键增幅到+${AUTO_TARGET_LEVEL}` }}
                     </button>
                   </div>
-                  <div v-if="auto10Result" class="alert alert-success text-center py-2 mb-0">
+                  <div v-if="autoTargetResult" class="alert alert-success text-center py-2 mb-0">
                     <small>
-                      消耗矛盾：<span class="fw-bold">{{ auto10Result.contradiction }}</span>，
-                      幸运符：<span class="fw-bold">{{ auto10Result.luckyCharm }}</span>
+                      消耗矛盾：<span class="fw-bold">{{ autoTargetResult.contradiction }}</span>，
+                      幸运符：<span class="fw-bold">{{ autoTargetResult.luckyCharm }}</span>
                     </small>
                   </div>
                 </div>
@@ -193,7 +206,7 @@
             </div>
             <div class="col-md-3 mb-3">
               <div class="bg-success-subtle rounded-3 p-3">
-                <h5 class="text-success-emphasis fw-bold mb-2">平均成功率</h5>
+                <h5 class="text-success-emphasis fw-bold mb-2">实测成功率</h5>
                 <p class="fs-2 fw-bold text-success-emphasis">{{ avgSuccessRate }}%</p>
               </div>
             </div>
@@ -338,13 +351,19 @@ let idSeed = 0
 
 // 单次可获取的每种胚子数量上限，避免误输入六位数导致表格渲染卡死页面
 const MAX_EMBRYON_COUNT = 200
+// 胚子列表的累计上限，含"连续点 +1"这条路径
+const MAX_TOTAL_EMBRYONS = 500
+// 一键增幅的循环保护上限。期望迭代约 5 次，这里只防极端情况下的死循环
+const MAX_AUTO_ITERATIONS = 10000
+// "一键增幅"的目标等级。与 MAX_LEVEL 解耦：规则表扩展到更高等级后，只调这一处即可
+const AUTO_TARGET_LEVEL = 10
 
 const weaponCount = ref(1)
 const nonWeaponCount = ref(1)
 const embryons = ref([])
 const selectedEmbryon = ref(null)
 const useLuckyCharm = ref(true)
-const auto10Result = ref(null)
+const autoTargetResult = ref(null)
 const toastMessage = ref('')
 const toastType = ref('celebration')
 const toastEl = ref(null)
@@ -361,8 +380,17 @@ const clampCount = (value) => {
 }
 
 const confirmGetEmbryons = () => {
-  const weapon = clampCount(weaponCount.value)
-  const nonWeapon = clampCount(nonWeaponCount.value)
+  const remaining = Math.max(0, MAX_TOTAL_EMBRYONS - embryons.value.length)
+  if (remaining === 0) return
+
+  let weapon = clampCount(weaponCount.value)
+  let nonWeapon = clampCount(nonWeaponCount.value)
+  // 超出剩余额度时按"先武器后非武器"截断，不让列表无限增长
+  if (weapon + nonWeapon > remaining) {
+    weapon = Math.min(weapon, remaining)
+    nonWeapon = Math.min(nonWeapon, remaining - weapon)
+  }
+
   for (let i = 0; i < weapon; i++) {
     embryons.value.push(createEmbryon('武器'))
   }
@@ -371,14 +399,14 @@ const confirmGetEmbryons = () => {
   }
   weaponCount.value = 1
   nonWeaponCount.value = 1
-  auto10Result.value = null
+  autoTargetResult.value = null
 }
 
 // 清空胚子并归零全部统计，便于对比两轮模拟结果
 const resetAll = () => {
   embryons.value = []
   selectedEmbryon.value = null
-  auto10Result.value = null
+  autoTargetResult.value = null
   totalAttempts.value = 0
   totalSuccess.value = 0
 }
@@ -405,14 +433,19 @@ const getLevelColor = (level) => {
 
 const selectEmbryon = (embryon) => {
   selectedEmbryon.value = embryon
-  auto10Result.value = null
+  autoTargetResult.value = null
 }
 
 const quickAddEmbryon = (type) => {
+  if (embryons.value.length >= MAX_TOTAL_EMBRYONS) return
   embryons.value.push(createEmbryon(type))
-  auto10Result.value = null
+  autoTargetResult.value = null
 }
 
+const isEmbryonFull = computed(() => embryons.value.length >= MAX_TOTAL_EMBRYONS)
+
+// 连成里程碑的专属文案。未列出的等级会走下面的通用兜底，
+// 所以规则表扩展到更高等级时，不补文案也不会出错。
 const CELEBRATION_MESSAGES = {
   10: '恭喜勇士增幅10连成，拯救阿拉德的重任就交给你了！',
   11: '恭喜勇士增幅11连成！你是天选之人，阿拉德的希望！',
@@ -423,10 +456,10 @@ const showToast = (message, type = 'celebration') => {
   toastType.value = type
   toastMessage.value = message
   nextTick(() => {
-    if (toastEl.value) {
-      const toast = new Toast(toastEl.value, { delay: 4000 })
-      toast.show()
-    }
+    if (!toastEl.value) return
+    // 复用同一实例，避免每次提示都重新绑定一份事件监听
+    const toast = Toast.getOrCreateInstance(toastEl.value, { delay: 4000 })
+    toast.show()
   })
 }
 
@@ -465,6 +498,14 @@ const currentLuckyCharmCost = computed(() => {
   if (currentRule.value.rate >= 100) return 0
   return useLuckyCharm.value ? currentRule.value.luckyCharm : 0
 })
+
+// 满级 / 一键增幅完成状态，用于把按钮和说明切换到"无可操作"口径，
+// 避免出现"显示 35% 成功率、点了没反应"的假可点状态。
+// 满级判定走 MAX_LEVEL（由规则表派生），规则扩展后自动跟随。
+const isMaxLevel = computed(() => !!selectedEmbryon.value && selectedEmbryon.value.level >= MAX_LEVEL)
+const isAutoTargetDone = computed(() => !!selectedEmbryon.value && selectedEmbryon.value.level >= AUTO_TARGET_LEVEL)
+const amplifyDisabled = computed(() => !selectedEmbryon.value || selectedEmbryon.value.broken || isMaxLevel.value)
+const autoTargetDisabled = computed(() => !selectedEmbryon.value || selectedEmbryon.value.broken || isAutoTargetDone.value)
 
 const totalContradiction = computed(() => embryons.value.reduce((s, e) => s + e.contradictionCost, 0))
 const totalLuckyCharm = computed(() => embryons.value.reduce((s, e) => s + e.luckyCharmCost, 0))
@@ -518,21 +559,30 @@ const doAmplify = () => {
   const embryon = selectedEmbryon.value
   if (embryon.level >= MAX_LEVEL) return
   doOneAmplify(embryon, useLuckyCharm.value)
-  auto10Result.value = null
+  autoTargetResult.value = null
 }
 
-const doAutoAmplify10 = () => {
+const doAutoAmplifyToTarget = () => {
   if (!selectedEmbryon.value || selectedEmbryon.value.broken) return
   const embryon = selectedEmbryon.value
-  if (embryon.level >= 10) return
+  // 目标等级不得超过规则表支持的上限，避免配置不一致时空转
+  const targetLevel = Math.min(AUTO_TARGET_LEVEL, MAX_LEVEL)
+  if (embryon.level >= targetLevel) return
 
   const startCost = { c: embryon.contradictionCost, l: embryon.luckyCharmCost }
 
-  while (embryon.level < 10 && !embryon.broken) {
-    doOneAmplify(embryon, true)
+  let iterations = 0
+  // 遵循界面上"使用幸运符"的勾选状态，不再写死为 true
+  while (embryon.level < targetLevel && !embryon.broken && iterations < MAX_AUTO_ITERATIONS) {
+    doOneAmplify(embryon, useLuckyCharm.value)
+    iterations++
   }
 
-  auto10Result.value = {
+  if (iterations >= MAX_AUTO_ITERATIONS) {
+    console.warn(`一键增幅达到迭代上限 ${MAX_AUTO_ITERATIONS}，已中止`)
+  }
+
+  autoTargetResult.value = {
     contradiction: embryon.contradictionCost - startCost.c,
     luckyCharm: embryon.luckyCharmCost - startCost.l
   }

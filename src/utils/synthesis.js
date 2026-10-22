@@ -47,7 +47,9 @@ export const synthesize = (stoneA, stoneB) => {
     
     const random = Math.random()
     let cumulative = 0
-    let selectedIndex = 0
+    // 兜底取最后一条：权重归一化后累加可能因浮点误差略小于 1，
+    // 此时 random 会落在区间外，落到首项会造成概率偏移。
+    let selectedIndex = normalizedWeights.length - 1
     
     for (let j = 0; j < normalizedWeights.length; j++) {
       cumulative += normalizedWeights[j]

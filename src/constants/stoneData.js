@@ -18,6 +18,12 @@ export const GRADE_CONFIG = {
   }
 }
 
+// 所有品级里最多的词条数。合成结果的皇冠档位（0 ~ MAX_ENTRY_COUNT）
+// 与统计卡片的行数都由它派生，新增品级时无需再改页面。
+export const MAX_ENTRY_COUNT = Math.max(
+  ...Object.values(GRADE_CONFIG).map(config => config.entryCount)
+)
+
 export const CROSS_GRADE_PROBABILITIES = {
   '史诗+神器': {
     '史诗': 20.22,

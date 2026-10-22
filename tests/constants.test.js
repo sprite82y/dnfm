@@ -2,15 +2,17 @@
 // 目的：把"游戏概率数值不许变"变成可执行断言，挡住后续重构带来的回归。
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
 
 import {
   STONE_GRADES,
   GRADE_CONFIG,
+  MAX_ENTRY_COUNT,
   CROSS_GRADE_PROBABILITIES,
   crossGradeProbabilityTexts,
   firstDrawProbabilities
 } from '../src/constants/stoneData.js'
-import { BOX_ITEMS, BOX_ITEM_GROUPS, BOX_COUNT_OPTIONS } from '../src/constants/boxData.js'
+import { BOX_ITEMS, BOX_ITEM_GROUPS, BOX_COUNT_OPTIONS, BOX_STAT_ITEMS } from '../src/constants/boxData.js'
 import {
   AMPLIFY_RULES,
   MAX_LEVEL,
@@ -275,4 +277,55 @@ test('失败规则按 minLevel 降序排列，保证首个匹配即最严格', (
       'FAILURE_RULES 必须从高到低排列'
     )
   }
+})
+
+// ---------- 派生配置（页面不再硬编码） ----------
+
+test('皇冠档位上限由品级词条数派生', () => {
+  const maxEntry = Math.max(...Object.values(GRADE_CONFIG).map(c => c.entryCount))
+  assert.equal(MAX_ENTRY_COUNT, maxEntry, 'MAX_ENTRY_COUNT 必须跟随最高品级')
+  assert.equal(MAX_ENTRY_COUNT, 4, '当前最高品级为史诗 4 条')
+})
+
+test('盒子统计项覆盖全部掉落物且去重', () => {
+  const names = BOX_STAT_ITEMS.map(item => item.name)
+  assert.deepEqual([...new Set(names)], names, '统计项不得重名')
+  for (const item of BOX_ITEMS) {
+    assert.ok(
+      names.includes(item.name),
+      `统计项缺少 ${item.name}，该物品会被静默忽略、不计数`
+    )
+  }
+  // BOX_ITEMS 里太古龙晶有 5 档数量，去重后应只剩 4 个统计项
+  assert.equal(names.length, new Set(BOX_ITEMS.map(i => i.name)).size)
+  assert.equal(names.length, 4)
+})
+
+test('盒子统计项各自带卡片配色', () => {
+  for (const item of BOX_STAT_ITEMS) {
+    assert.ok(item.cardClass, `${item.name} 缺少 cardClass`)
+    assert.ok(item.textClass, `${item.name} 缺少 textClass`)
+  }
+})
+
+test('README 的跨品级数值与常量一致，且不把权重写成概率', () => {
+  const readme = readFileSync(new URL('../README.md', import.meta.url), 'utf8')
+
+  for (const [key, probs] of Object.entries(CROSS_GRADE_PROBABILITIES)) {
+    for (const value of Object.values(probs)) {
+      assert.ok(
+        readme.includes(String(value)),
+        `README 未包含 ${key} 的权重 ${value}，文档已与常量脱节`
+      )
+    }
+  }
+
+  assert.ok(
+    !/20\.22\s*%/.test(readme),
+    '权重 20.22 不能写成 20.22%：它是逐条抽取权重，不是成品概率'
+  )
+  assert.ok(
+    !readme.includes('不同品级合成概率'),
+    'README 不得再把权重表述为「合成概率」'
+  )
 })

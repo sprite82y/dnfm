@@ -44,28 +44,10 @@
                 点击"开始开启"按钮查看结果
               </div>
               <div v-else class="row">
-                <div class="col-md-6 mb-2">
-                  <div class="bg-warning-subtle rounded-3 p-2">
-                    <h5 class="text-warning-emphasis fw-bold small mb-1">太古龙晶</h5>
-                    <p class="fs-4 fw-bold text-warning-emphasis">{{ currentResults.太古龙晶 }}</p>
-                  </div>
-                </div>
-                <div class="col-md-6 mb-2">
-                  <div class="bg-success-subtle rounded-3 p-2">
-                    <h5 class="text-success-emphasis fw-bold small mb-1">龙之雷焰</h5>
-                    <p class="fs-4 fw-bold text-success-emphasis">{{ currentResults.龙之雷焰 }}</p>
-                  </div>
-                </div>
-                <div class="col-md-6 mb-2">
-                  <div class="bg-info-subtle rounded-3 p-2">
-                    <h5 class="text-info-emphasis fw-bold small mb-1">矛盾的结晶体</h5>
-                    <p class="fs-4 fw-bold text-info-emphasis">{{ currentResults.矛盾的结晶体 }}</p>
-                  </div>
-                </div>
-                <div class="col-md-6 mb-2">
-                  <div class="bg-secondary-subtle rounded-3 p-2">
-                    <h5 class="text-secondary-emphasis fw-bold small mb-1">深渊-调律之痕</h5>
-                    <p class="fs-4 fw-bold text-secondary-emphasis">{{ currentResults.深渊调律之痕 }}</p>
+                <div v-for="item in BOX_STAT_ITEMS" :key="item.name" class="col-md-6 mb-2">
+                  <div class="rounded-3 p-2" :class="item.cardClass">
+                    <h5 class="fw-bold small mb-1" :class="item.textClass">{{ item.name }}</h5>
+                    <p class="fs-4 fw-bold mb-0" :class="item.textClass">{{ currentResults[item.name] }}</p>
                   </div>
                 </div>
               </div>
@@ -95,28 +77,10 @@
                 </button>
               </div>
               <div class="row">
-                <div class="col-md-6 mb-2">
-                  <div class="bg-warning-subtle rounded-3 p-2">
-                    <h5 class="text-warning-emphasis fw-bold small mb-1">太古龙晶</h5>
-                    <p class="fs-4 fw-bold text-warning-emphasis">{{ stats.太古龙晶 }}</p>
-                  </div>
-                </div>
-                <div class="col-md-6 mb-2">
-                  <div class="bg-success-subtle rounded-3 p-2">
-                    <h5 class="text-success-emphasis fw-bold small mb-1">龙之雷焰</h5>
-                    <p class="fs-4 fw-bold text-success-emphasis">{{ stats.龙之雷焰 }}</p>
-                  </div>
-                </div>
-                <div class="col-md-6 mb-2">
-                  <div class="bg-info-subtle rounded-3 p-2">
-                    <h5 class="text-info-emphasis fw-bold small mb-1">矛盾的结晶体</h5>
-                    <p class="fs-4 fw-bold text-info-emphasis">{{ stats.矛盾的结晶体 }}</p>
-                  </div>
-                </div>
-                <div class="col-md-6 mb-2">
-                  <div class="bg-secondary-subtle rounded-3 p-2">
-                    <h5 class="text-secondary-emphasis fw-bold small mb-1">深渊-调律之痕</h5>
-                    <p class="fs-4 fw-bold text-secondary-emphasis">{{ stats.深渊调律之痕 }}</p>
+                <div v-for="item in BOX_STAT_ITEMS" :key="item.name" class="col-md-6 mb-2">
+                  <div class="rounded-3 p-2" :class="item.cardClass">
+                    <h5 class="fw-bold small mb-1" :class="item.textClass">{{ item.name }}</h5>
+                    <p class="fs-4 fw-bold mb-0" :class="item.textClass">{{ stats[item.name] }}</p>
                   </div>
                 </div>
               </div>
@@ -148,54 +112,38 @@
 <script setup>
 import { ref, reactive, computed } from 'vue'
 import PageLayout from '../components/PageLayout.vue'
-import { BOX_ITEMS, BOX_ITEM_GROUPS, BOX_COUNT_OPTIONS } from '../constants/boxData'
+import { BOX_ITEMS, BOX_ITEM_GROUPS, BOX_COUNT_OPTIONS, BOX_STAT_ITEMS } from '../constants/boxData'
 
 const boxCount = ref(BOX_COUNT_OPTIONS[0])
 const boxCountOptions = BOX_COUNT_OPTIONS
 const isOpening = ref(false)
 const progress = ref(0)
-const currentResults = reactive({
-  太古龙晶: 0,
-  龙之雷焰: 0,
-  矛盾的结晶体: 0,
-  深渊调律之痕: 0
-})
+
+// 统计对象按 BOX_STAT_ITEMS 动态初始化：
+// 新增掉落物只要改 constants/boxData.js，页面不再逐项硬编码物品名
+const createEmptyStats = () =>
+  Object.fromEntries(BOX_STAT_ITEMS.map(item => [item.name, 0]))
+
+const currentResults = reactive(createEmptyStats())
+const stats = reactive(createEmptyStats())
 const totalBoxes = ref(0)
 
-const hasCurrentResult = computed(() => {
-  return currentResults.太古龙晶 > 0 || 
-         currentResults.龙之雷焰 > 0 || 
-         currentResults.矛盾的结晶体 > 0 || 
-         currentResults.深渊调律之痕 > 0
-})
-
-const stats = reactive({
-  太古龙晶: 0,
-  龙之雷焰: 0,
-  矛盾的结晶体: 0,
-  深渊调律之痕: 0
-})
+const hasCurrentResult = computed(() =>
+  BOX_STAT_ITEMS.some(item => currentResults[item.name] > 0)
+)
 
 // 累计统计是否已有数据（决定"重置"按钮是否可点）
-const hasAnyStats = computed(() => {
-  return totalBoxes.value > 0 ||
-         stats.太古龙晶 > 0 ||
-         stats.龙之雷焰 > 0 ||
-         stats.矛盾的结晶体 > 0 ||
-         stats.深渊调律之痕 > 0
-})
+const hasAnyStats = computed(() =>
+  totalBoxes.value > 0 || BOX_STAT_ITEMS.some(item => stats[item.name] > 0)
+)
 
 const resetStats = () => {
   if (isOpening.value) return
   totalBoxes.value = 0
-  stats.太古龙晶 = 0
-  stats.龙之雷焰 = 0
-  stats.矛盾的结晶体 = 0
-  stats.深渊调律之痕 = 0
-  currentResults.太古龙晶 = 0
-  currentResults.龙之雷焰 = 0
-  currentResults.矛盾的结晶体 = 0
-  currentResults.深渊调律之痕 = 0
+  for (const item of BOX_STAT_ITEMS) {
+    stats[item.name] = 0
+    currentResults[item.name] = 0
+  }
   progress.value = 0
 }
 
@@ -231,44 +179,38 @@ const openBox = () => {
 }
 
 const openBoxes = async () => {
+  if (isOpening.value) return
   isOpening.value = true
   progress.value = 0
   
-  currentResults.太古龙晶 = 0
-  currentResults.龙之雷焰 = 0
-  currentResults.矛盾的结晶体 = 0
-  currentResults.深渊调律之痕 = 0
+  for (const item of BOX_STAT_ITEMS) {
+    currentResults[item.name] = 0
+  }
   
   const batchSize = 50
   const totalBatches = Math.ceil(boxCount.value / batchSize)
   
-  for (let batch = 0; batch < totalBatches; batch++) {
-    const start = batch * batchSize
-    const end = Math.min(start + batchSize, boxCount.value)
-    
-    for (let i = start; i < end; i++) {
-      const result = openBox()
+  try {
+    for (let batch = 0; batch < totalBatches; batch++) {
+      const start = batch * batchSize
+      const end = Math.min(start + batchSize, boxCount.value)
       
-      if (result.name === '太古龙晶') {
-        currentResults.太古龙晶 += result.amount
-        stats.太古龙晶 += result.amount
-      } else if (result.name === '龙之雷焰') {
-        currentResults.龙之雷焰 += result.amount
-        stats.龙之雷焰 += result.amount
-      } else if (result.name === '矛盾的结晶体') {
-        currentResults.矛盾的结晶体 += result.amount
-        stats.矛盾的结晶体 += result.amount
-      } else if (result.name === '深渊-调律之痕') {
-        currentResults.深渊调律之痕 += result.amount
-        stats.深渊调律之痕 += result.amount
+      for (let i = start; i < end; i++) {
+        const result = openBox()
+        // 按物品名动态累加：BOX_ITEMS 新增物品会自动计入，
+        // 不会再出现"开了盒子但统计里没有"的静默丢数据
+        currentResults[result.name] = (currentResults[result.name] || 0) + result.amount
+        stats[result.name] = (stats[result.name] || 0) + result.amount
       }
+      
+      progress.value = end
+      // 每批结束就结算盒子数，中途异常时统计与累计数仍能对上
+      totalBoxes.value += end - start
+      await new Promise(resolve => requestAnimationFrame(resolve))
     }
-    
-    progress.value = end
-    await new Promise(resolve => requestAnimationFrame(resolve))
+  } finally {
+    // 任何异常都要解除锁定，否则按钮永久停在"开启中"
+    isOpening.value = false
   }
-  
-  totalBoxes.value += boxCount.value
-  isOpening.value = false
 }
 </script>

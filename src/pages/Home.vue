@@ -101,7 +101,7 @@
                 <div class="col-md-6">
                   <h5 class="text-primary mb-2">超武盒子模拟器</h5>
                   <ul class="list-unstyled small text-muted d-flex flex-column gap-1">
-                    <li>• 选择开启盒子数量（100/200/500/1000/10000）</li>
+                    <li>• 选择开启盒子数量（{{ boxCountText }}）</li>
                     <li>• 模拟开启过程，汇总获得物品</li>
                     <li>• 统计累计获得的太古龙晶、龙之雷焰等</li>
                     <li>• 查看物品概率说明</li>
@@ -112,8 +112,8 @@
                   <ul class="list-unstyled small text-muted d-flex flex-column gap-1">
                     <li>• 获取武器/非武器胚子</li>
                     <li>• 单独增幅或一键增幅到+10</li>
-                    <li>• 失败规则：5-7级-1，8-10级-3，11级起损坏</li>
-                    <li>• 统计总消耗、损坏数量和平均成功率</li>
+                    <li>• 失败规则：{{ failureRuleText }}</li>
+                    <li>• 统计总消耗、损坏数量和实测成功率</li>
                   </ul>
                 </div>
               </div>
@@ -126,4 +126,12 @@
 
 <script setup>
 import PageLayout from '../components/PageLayout.vue'
+import { BOX_COUNT_OPTIONS } from '../constants/boxData'
+import { failureRuleSummaries } from '../constants/amplifyData'
+
+// 首页文案同样由常量生成，避免与 constants/ 下的游戏数值漂移
+const boxCountText = BOX_COUNT_OPTIONS.join('/')
+const failureRuleText = failureRuleSummaries()
+  .map(rule => `${rule.range} ${rule.label}`)
+  .join('，')
 </script>

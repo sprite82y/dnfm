@@ -18,7 +18,7 @@
       </div>
 
       <div class="d-flex flex-column gap-3">
-        <div v-for="crown in [0, 1, 2, 3, 4]" :key="crown" class="d-flex align-items-center gap-3">
+        <div v-for="crown in crownLevels" :key="crown" class="d-flex align-items-center gap-3">
           <div class="flex-shrink-0" style="width: 70px;">
             <span class="fs-4">{{ crown === 0 ? '○' : '👑'.repeat(crown) }}</span>
           </div>
@@ -54,32 +54,30 @@
 </template>
 
 <script setup>
+import { MAX_ENTRY_COUNT } from '../constants/stoneData'
+
 const props = defineProps({
   stats: {
     type: Object,
-    default: () => ({
-      total: 0,
-      0: 0,
-      1: 0,
-      2: 0,
-      3: 0,
-      4: 0
-    })
+    default: () => ({ total: 0 })
   }
 })
 
 const emit = defineEmits(['reset'])
 
+// 皇冠档位由常量派生：最高词条数的品级决定上限，新增品级时自动适配
+const crownLevels = Array.from({ length: MAX_ENTRY_COUNT + 1 }, (_, index) => index)
+
 const getPercentage = (crown) => {
   if (props.stats.total === 0) return 0
-  return ((props.stats[crown] / props.stats.total) * 100).toFixed(1)
+  return (((props.stats[crown] || 0) / props.stats.total) * 100).toFixed(1)
 }
 
 const getAverage = () => {
   if (props.stats.total === 0) return 0
   let sum = 0
-  for (let i = 0; i <= 4; i++) {
-    sum += i * props.stats[i]
+  for (const crown of crownLevels) {
+    sum += crown * (props.stats[crown] || 0)
   }
   return sum / props.stats.total
 }

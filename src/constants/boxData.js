@@ -31,3 +31,24 @@ export const BOX_ITEM_GROUPS = [
 
 // 可选的开启数量
 export const BOX_COUNT_OPTIONS = [100, 200, 500, 1000, 10000]
+
+// 统计卡片的配色，按物品名索引。
+// 新增物品时只需在 BOX_ITEMS 里加一条（必要时在此补配色），统计卡片会自动出现，
+// 页面无需再逐个判断物品名。
+const BOX_ITEM_CARD_STYLES = {
+  '太古龙晶': { cardClass: 'bg-warning-subtle', textClass: 'text-warning-emphasis' },
+  '龙之雷焰': { cardClass: 'bg-success-subtle', textClass: 'text-success-emphasis' },
+  '矛盾的结晶体': { cardClass: 'bg-info-subtle', textClass: 'text-info-emphasis' },
+  '深渊-调律之痕': { cardClass: 'bg-secondary-subtle', textClass: 'text-secondary-emphasis' }
+}
+
+const DEFAULT_CARD_STYLE = {
+  cardClass: 'bg-secondary-subtle',
+  textClass: 'text-secondary-emphasis'
+}
+
+// 统计与「本次结果」卡片的数据源：按物品名去重，保留 BOX_ITEMS 中的先后顺序。
+export const BOX_STAT_ITEMS = [...new Set(BOX_ITEMS.map(item => item.name))].map(name => ({
+  name,
+  ...(BOX_ITEM_CARD_STYLES[name] || DEFAULT_CARD_STYLE)
+}))
