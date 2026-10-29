@@ -6,11 +6,11 @@ on:
     branches:
       - main
 
-# 设置 GITHUB_TOKEN 的权限
+# 默认最小权限：每个 job 按需在上方声明自己的 permissions，
+# 避免 build 阶段执行第三方依赖脚本时手里握着 pages:write / id-token:write
+# 文档：https://docs.github.com/actions/reference/security/secure-use#use-minimal-permissions
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 # 允许只有一个并发部署
 concurrency:
@@ -20,6 +20,10 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # 构建只需要读仓库：会跑 npm ci（含第三方依赖脚本），
+    # 故不授予 pages:write / id-token:write
+    permissions:
+      contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -52,6 +56,11 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     needs: build
     runs-on: ubuntu-latest
+    # 只有真正发布 Pages 的 job 才需要这两项
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
