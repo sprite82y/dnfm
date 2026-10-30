@@ -36,8 +36,12 @@ jobs:
           cache: 'npm'
       
       - name: Install Dependencies
-        # 用 ci 而非 install：严格按 package-lock.json 安装，保证与本地一致
-        run: npm ci
+        # 用 ci 而非 install：严格按 package-lock.json 安装，保证与本地一致。
+        # 本地 lock 的 resolved 指向 npmmirror 镜像，CI 里强制改走官方源：
+        #   --registry                   指到 npmjs
+        #   --replace-registry-host=always 把 lock 中 tarball URL 的 host 重写为上面的源
+        # 只换下载地址，不改版本也不改 integrity，仍是严格安装（等价 npmjs 版 lock）。
+        run: npm ci --registry=https://registry.npmjs.org/ --replace-registry-host=always
       
       - name: Run Tests
         run: npm test
